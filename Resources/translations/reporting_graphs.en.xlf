@@ -78,6 +78,22 @@
         <source>summary.view.year</source>
         <target>Year</target>
       </trans-unit>
+      <trans-unit id="widget.working_time" resname="widget.working_time">
+        <source>widget.working_time</source>
+        <target>Your working hours by project</target>
+      </trans-unit>
+      <trans-unit id="widget.previous_week" resname="widget.previous_week">
+        <source>widget.previous_week</source>
+        <target>Previous week</target>
+      </trans-unit>
+      <trans-unit id="widget.next_week" resname="widget.next_week">
+        <source>widget.next_week</source>
+        <target>Next week</target>
+      </trans-unit>
+      <trans-unit id="widget.no_hours" resname="widget.no_hours">
+        <source>widget.no_hours</source>
+        <target>No hours recorded this week.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

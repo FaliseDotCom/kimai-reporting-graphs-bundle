@@ -78,6 +78,22 @@
         <source>summary.view.year</source>
         <target>Jaar</target>
       </trans-unit>
+      <trans-unit id="widget.working_time" resname="widget.working_time">
+        <source>widget.working_time</source>
+        <target>Je werkuren per project</target>
+      </trans-unit>
+      <trans-unit id="widget.previous_week" resname="widget.previous_week">
+        <source>widget.previous_week</source>
+        <target>Vorige week</target>
+      </trans-unit>
+      <trans-unit id="widget.next_week" resname="widget.next_week">
+        <source>widget.next_week</source>
+        <target>Volgende week</target>
+      </trans-unit>
+      <trans-unit id="widget.no_hours" resname="widget.no_hours">
+        <source>widget.no_hours</source>
+        <target>Deze week zijn geen uren geregistreerd.</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

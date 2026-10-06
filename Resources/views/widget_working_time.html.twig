@@ -1,0 +1,73 @@
+{# Dashboard widget: the user's working hours of one week, stacked by project, with totals. #}
+{% trans_default_domain 'reporting_graphs' %}
+{% set summary = data.summary %}
+{% set week_number = data.begin|date_format('W') %}
+<link rel="stylesheet" href="{{ path('reporting_bundle_asset', { 'name': 'reporting.css', 'v': data.assetVersion }) }}">
+<script src="{{ path('reporting_bundle_asset', { 'name': 'reporting.js', 'v': data.assetVersion }) }}"></script>
+
+<div class="card h-100 summary-widget">
+  <div class="card-header">
+    <h3 class="card-title">{{ title|trans }}</h3>
+    <div class="card-actions btn-list">
+      <a class="btn btn-icon" href="{{ path('dashboard', { (constant('KimaiPlugin\\ReportingGraphsBundle\\Widget\\WorkingTimeWidget::WEEK_PARAMETER')): data.previous }) }}"
+        title="{{ 'widget.previous_week'|trans }}" aria-label="{{ 'widget.previous_week'|trans }}"><i class="{{ 'left'|icon(true) }}"></i></a>
+      <a class="btn btn-icon" href="{{ path('dashboard', { (constant('KimaiPlugin\\ReportingGraphsBundle\\Widget\\WorkingTimeWidget::WEEK_PARAMETER')): data.next }) }}"
+        title="{{ 'widget.next_week'|trans }}" aria-label="{{ 'widget.next_week'|trans }}"><i class="{{ 'right'|icon(true) }}"></i></a>
+    </div>
+  </div>
+
+  <div class="card-body">
+    {% include '@ReportingGraphs/chart_data.html.twig' %}
+    <div class="row g-3">
+      <div class="col-lg-8 summary-chart-fill">
+        <div class="summary-chart summary-chart-bar">
+          <canvas id="summary-bar-chart" aria-label="{{ 'summary.chart.bar'|trans }}" role="img"></canvas>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        {% if summary.groups is not empty %}
+          <div class="summary-chart summary-chart-doughnut">
+            <canvas id="summary-doughnut-chart" aria-label="{{ 'summary.chart.doughnut'|trans }}" role="img"></canvas>
+          </div>
+          <ul class="summary-legend">
+            {% for series in summary.chartSeries %}
+              <li class="summary-legend-item">
+                <span class="summary-swatch" data-color="{{ series.color }}" data-color-dark="{{ series.colorDark }}"></span>
+                <span class="summary-legend-name">{{ series.other ? 'summary.other'|trans : series.name }}</span>
+                <span class="summary-group-duration">{{ series.duration|duration }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-secondary summary-widget-empty">{{ 'widget.no_hours'|trans }}</p>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="card-footer">
+    <div class="row text-center summary-widget-totals">
+      {% set totals = [
+        { 'total': data.today, 'label': 'stats.workingTimeToday'|trans({ '%day%': 'now'|date_short }, 'messages') },
+        { 'total': data.week, 'label': 'stats.workingTimeWeek'|trans({ '%week%': week_number }, 'messages') },
+        { 'total': data.month, 'label': 'stats.workingTimeMonth'|trans({ '%month%': data.begin|month_name, '%year%': data.begin|date_format('Y') }, 'messages') },
+        { 'total': data.year, 'label': data.financialYear ? 'stats.workingTimeFinancialYear'|trans({}, 'messages') : 'stats.workingTimeYear'|trans({ '%year%': data.year.date|date_format('Y') }, 'messages') },
+      ] %}
+      {% for item in totals %}
+        <div class="col-6 col-md-3">
+          {% if data.canViewReports %}
+            <a class="summary-widget-total" href="{{ path(item.total.route, { 'date': item.total.date }) }}">
+              <span class="h3 d-block mb-1">{{ item.total.duration|duration }}</span>
+              <span>{{ item.label }}</span>
+            </a>
+          {% else %}
+            <div class="summary-widget-total">
+              <span class="h3 d-block mb-1">{{ item.total.duration|duration }}</span>
+              <span>{{ item.label }}</span>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>

@@ -37,6 +37,17 @@ report covers everything from the first to the last record.
 It ships with the [Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai/blob/main/kimai/DOCS.md), but works in any Kimai
 installation.
 
+## Dashboard widget
+
+**Your working hours by project** (`ReportingGraphsWorkingTime`) is a dashboard widget for the
+logged-in user's week: the stacked bar chart per day and the doughnut chart of the projects'
+shares, the same as on the user reports, with arrows to the previous and next week. The week
+is passed in the dashboard's `working_time_week` query parameter. The totals of today, the
+week, the month and the year (or the financial year, when one is configured) link to the
+weekly, monthly and yearly user report, for users with `report:user`. It is a separate widget
+next to Kimai's own **My working hours**, which stays available; users add it under the
+dashboard's **Settings**. The widget needs `view_own_timesheet`, like Kimai's chart.
+
 ## Requirements
 
 Kimai 2.67.0 or later. It uses the Chart.js build that Kimai ships, so it needs no assets of

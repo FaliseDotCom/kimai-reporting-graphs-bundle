@@ -193,3 +193,22 @@
 {
   text-decoration: underline;
 }
+
+/* Dashboard widget: totals in the footer link to the user reports */
+.summary-widget-total
+{
+  display: block;
+  color: inherit;
+}
+
+a.summary-widget-total:hover
+{
+  color: var(--tblr-primary);
+  text-decoration: none;
+}
+
+.summary-widget-empty
+{
+  margin: 0;
+  padding-top: 1rem;
+}
