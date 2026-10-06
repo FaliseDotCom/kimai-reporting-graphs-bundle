@@ -80,7 +80,7 @@
       </trans-unit>
       <trans-unit id="widget.working_time" resname="widget.working_time">
         <source>widget.working_time</source>
-        <target>Je werkuren per project</target>
+        <target>Je werkuren per project per week</target>
       </trans-unit>
       <trans-unit id="widget.previous_week" resname="widget.previous_week">
         <source>widget.previous_week</source>

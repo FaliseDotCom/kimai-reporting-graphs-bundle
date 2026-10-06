@@ -39,7 +39,7 @@ installation.
 
 ## Dashboard widget
 
-**Your working hours by project** (`ReportingGraphsWorkingTime`) is a dashboard widget for the
+**Your working hours by project per week** (`ReportingGraphsWorkingTime`) is a dashboard widget for the
 logged-in user's week: the stacked bar chart per day and the doughnut chart of the projects'
 shares, the same as on the user reports, with arrows to the previous and next week. The week
 is passed in the dashboard's `working_time_week` query parameter. The totals of today, the
