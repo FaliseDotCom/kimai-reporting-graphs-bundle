@@ -4,18 +4,14 @@ declare( strict_types=1 );
 
 namespace KimaiPlugin\ReportingGraphsBundle\Widget;
 
-use App\Configuration\SystemConfiguration;
-use App\Entity\User;
-use App\Repository\TimesheetRepository;
 use App\Timesheet\DateTimeFactory;
 use App\Widget\Type\AbstractWidget;
 use App\Widget\WidgetInterface;
 use DateTimeImmutable;
-use DateTimeInterface;
-use KimaiPlugin\ReportingGraphsBundle\EventSubscriber\UserReportChartsSubscriber;
 use KimaiPlugin\ReportingGraphsBundle\Model\SummaryQuery;
 use KimaiPlugin\ReportingGraphsBundle\ReportingGraphsBundle;
 use KimaiPlugin\ReportingGraphsBundle\Repository\SummaryRepository;
+use KimaiPlugin\ReportingGraphsBundle\Service\HoursTotals;
 use KimaiPlugin\ReportingGraphsBundle\Service\SummaryBuilder;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -27,7 +23,7 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
  * Arrows step to the previous and next week.
  *
  * @phpstan-import-type Summary from SummaryBuilder
- * @phpstan-type Total array{duration: int, route: string, date: string}
+ * @phpstan-import-type Total from HoursTotals
  * @phpstan-type WorkingTimeData array{
  *   summary: Summary,
  *   begin: DateTimeImmutable,
@@ -63,16 +59,14 @@ final class WorkingTimeWidget extends AbstractWidget
    * @param RequestStack $requestStack Tells which week is asked for, and the page locale.
    * @param SummaryRepository $repository Reads the aggregated time records.
    * @param SummaryBuilder $builder Turns the records into chart data.
-   * @param TimesheetRepository $timesheetRepository Sums the durations of the totals.
-   * @param SystemConfiguration $configuration Provides the start of the financial year.
+   * @param HoursTotals $totals Sums today, the week, its month and its year.
    * @param AuthorizationCheckerInterface $security Checks whether the reports may be opened.
    */
   public function __construct(
     private readonly RequestStack $requestStack,
     private readonly SummaryRepository $repository,
     private readonly SummaryBuilder $builder,
-    private readonly TimesheetRepository $timesheetRepository,
-    private readonly SystemConfiguration $configuration,
+    private readonly HoursTotals $totals,
     private readonly AuthorizationCheckerInterface $security
   )
   {
@@ -160,50 +154,20 @@ final class WorkingTimeWidget extends AbstractWidget
     $factory = DateTimeFactory::createByUser( $user );
     $request = $this->requestStack->getMainRequest();
     $requested = $factory->createDateTimeFromFormat( '!' . self::DATE_FORMAT, (string) $request?->query->get( self::WEEK_PARAMETER ) );
-    $now = $factory->createDateTime();
 
-    $weekBegin = DateTimeImmutable::createFromMutable( $factory->getStartOfWeek( $requested === false ? $now : $requested ) );
-    $weekEnd = DateTimeImmutable::createFromMutable( $factory->getEndOfWeek( $weekBegin ) );
+    $weekBegin = DateTimeImmutable::createFromMutable( $factory->getStartOfWeek( $requested === false ? $factory->createDateTime() : $requested ) );
     $begin = new DateTimeImmutable( $weekBegin->format( self::DATE_FORMAT ) );
-    $end = new DateTimeImmutable( $weekEnd->format( self::DATE_FORMAT ) );
+    $end = new DateTimeImmutable( $factory->getEndOfWeek( $weekBegin )->format( self::DATE_FORMAT ) );
     $rows = $this->repository->findRows( $begin, $end, [ (int) $user->getId() ] );
 
-    $financialYear = $this->configuration->getFinancialYearStart();
-    $yearBegin = $financialYear === null ? $factory->createStartOfYear( $weekBegin ) : $factory->createStartOfFinancialYear( $financialYear );
-    $yearEnd = $financialYear === null ? $factory->createEndOfYear( $weekBegin ) : $factory->createEndOfFinancialYear( $yearBegin );
-
-    return [
+    return $this->totals->create( $user, $user, $weekBegin ) + [
       'summary' => $this->builder->build( $rows, $begin, $end, SummaryQuery::GROUP_PROJECT, $request?->getLocale() ?? 'en' ),
       'begin' => $begin,
       'end' => $end,
       'previous' => $weekBegin->modify( '-7 days' )->format( self::DATE_FORMAT ),
       'next' => $weekBegin->modify( '+7 days' )->format( self::DATE_FORMAT ),
-      'today' => $this->createTotal( $user, $factory->createDateTime( '00:00:00' ), $factory->createDateTime( '23:59:59' ), UserReportChartsSubscriber::ROUTE_WEEK, $now ),
-      'week' => $this->createTotal( $user, $weekBegin, $weekEnd, UserReportChartsSubscriber::ROUTE_WEEK, $weekBegin ),
-      'month' => $this->createTotal( $user, $factory->getStartOfMonth( $weekBegin ), $factory->getEndOfMonth( $weekBegin ), UserReportChartsSubscriber::ROUTE_MONTH, $factory->getStartOfMonth( $weekBegin ) ),
-      'year' => $this->createTotal( $user, $yearBegin, $yearEnd, UserReportChartsSubscriber::ROUTE_YEAR, $yearBegin ),
-      'financialYear' => $financialYear !== null,
       'canViewReports' => $this->security->isGranted( 'report:user' ),
       'assetVersion' => ReportingGraphsBundle::getAssetVersion(),
-    ];
-  }
-
-  /**
-   * Describes one total: its duration and the user report that shows it.
-   *
-   * @param User $user The logged-in user.
-   * @param DateTimeInterface $begin Start of the period.
-   * @param DateTimeInterface $end End of the period.
-   * @param string $route The user report to link to.
-   * @param DateTimeInterface $date The date the report opens on.
-   * @return Total
-   */
-  private function createTotal( User $user, DateTimeInterface $begin, DateTimeInterface $end, string $route, DateTimeInterface $date ) : array
-  {
-    return [
-      'duration' => $this->timesheetRepository->getDurationForTimeRange( $begin, $end, $user ),
-      'route' => $route,
-      'date' => $date->format( self::DATE_FORMAT ),
     ];
   }
 }

@@ -94,6 +94,18 @@
         <source>widget.no_hours</source>
         <target>No hours recorded this week.</target>
       </trans-unit>
+      <trans-unit id="widget.hours_overview" resname="widget.hours_overview">
+        <source>widget.hours_overview</source>
+        <target>Hours overview</target>
+      </trans-unit>
+      <trans-unit id="widget.my_hours" resname="widget.my_hours">
+        <source>widget.my_hours</source>
+        <target>My hours</target>
+      </trans-unit>
+      <trans-unit id="widget.all_hours" resname="widget.all_hours">
+        <source>widget.all_hours</source>
+        <target>Everyone's hours</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

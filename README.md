@@ -48,6 +48,17 @@ weekly, monthly and yearly user report, for users with `report:user`. It is a se
 next to Kimai's own **My working hours**, which stays available; users add it under the
 dashboard's **Settings**. The widget needs `view_own_timesheet`, like Kimai's chart.
 
+## Hours overview widget
+
+**Hours overview** (`ReportingGraphsHoursOverview`) shows today, this week, this month and this
+year (or the financial year) in Kimai's card style, under two headings: **My hours** for the
+logged-in user, and **Everyone's hours** for users with `view_other_timesheet`, counted the way
+Kimai's own `Duration*` cards count them. The whole card links to the user report
+(`report:user`) or the report for all users (`report:other`); the today cards open the week.
+It is meant to replace Kimai's four duration cards, whose titles do not say whose hours they
+count. `Service/HoursTotals.php` sums the periods for this widget and the working hours
+widget.
+
 ## Linked duration cards
 
 Kimai's duration cards on the dashboard support a `route` option that turns their icon into a

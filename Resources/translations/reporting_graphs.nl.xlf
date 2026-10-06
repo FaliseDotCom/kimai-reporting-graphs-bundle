@@ -94,6 +94,18 @@
         <source>widget.no_hours</source>
         <target>Deze week zijn geen uren geregistreerd.</target>
       </trans-unit>
+      <trans-unit id="widget.hours_overview" resname="widget.hours_overview">
+        <source>widget.hours_overview</source>
+        <target>Urenoverzicht</target>
+      </trans-unit>
+      <trans-unit id="widget.my_hours" resname="widget.my_hours">
+        <source>widget.my_hours</source>
+        <target>Mijn uren</target>
+      </trans-unit>
+      <trans-unit id="widget.all_hours" resname="widget.all_hours">
+        <source>widget.all_hours</source>
+        <target>Uren van iedereen</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

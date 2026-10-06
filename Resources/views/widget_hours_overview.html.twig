@@ -1,0 +1,45 @@
+{# Dashboard widget: today, this week, this month and this year, for the user and for all users. #}
+{% trans_default_domain 'reporting_graphs' %}
+
+{% macro cards(totals, linked) %}
+  {% set cards = [
+    { 'total': totals.today, 'label': 'stats.durationToday', 'color': 'green' },
+    { 'total': totals.week, 'label': 'stats.durationWeek', 'color': 'blue' },
+    { 'total': totals.month, 'label': 'stats.durationMonth', 'color': 'purple' },
+    { 'total': totals.year, 'label': totals.financialYear ? 'stats.durationFinancialYear' : 'stats.durationYear', 'color': 'yellow' },
+  ] %}
+  <div class="row row-cards">
+    {% for card in cards %}
+      <div class="col-sm-6 col-lg-3">
+        {% set content %}
+          <div class="card-body">
+            <div class="row align-items-center">
+              <div class="col-auto">
+                <span class="bg-{{ card.color }} text-{{ card.color }}-fg avatar">{{ icon('duration', true) }}</span>
+              </div>
+              <div class="col">
+                <div class="font-weight-medium">{{ card.label|trans({}, 'messages') }}</div>
+                <div class="text-body-secondary">{{ card.total.duration|duration }}</div>
+              </div>
+            </div>
+          </div>
+        {% endset %}
+        {% if linked %}
+          <a class="card card-sm card-link summary-hours-card" href="{{ path(card.total.route, { 'date': card.total.date }) }}">{{ content }}</a>
+        {% else %}
+          <div class="card card-sm summary-hours-card">{{ content }}</div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+<div class="summary-hours-overview w-100">
+  <h3 class="summary-hours-heading">{{ 'widget.my_hours'|trans }}</h3>
+  {{ _self.cards(data.own, data.ownLinks) }}
+
+  {% if data.all is not null %}
+    <h3 class="summary-hours-heading">{{ 'widget.all_hours'|trans }}</h3>
+    {{ _self.cards(data.all, data.allLinks) }}
+  {% endif %}
+</div>

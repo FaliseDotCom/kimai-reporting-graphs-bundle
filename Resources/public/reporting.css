@@ -212,3 +212,14 @@ a.summary-widget-total:hover
   margin: 0;
   padding-top: 1rem;
 }
+
+/* Dashboard hours overview: "My hours" and "Everyone's hours", each a row of cards */
+.summary-hours-heading
+{
+  margin: 0 0 0.75rem;
+}
+
+.summary-hours-overview > .row + .summary-hours-heading
+{
+  margin-top: 1.5rem;
+}
