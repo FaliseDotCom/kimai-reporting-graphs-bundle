@@ -48,6 +48,19 @@ weekly, monthly and yearly user report, for users with `report:user`. It is a se
 next to Kimai's own **My working hours**, which stays available; users add it under the
 dashboard's **Settings**. The widget needs `view_own_timesheet`, like Kimai's chart.
 
+## Linked duration cards
+
+Kimai's duration cards on the dashboard support a `route` option that turns their icon into a
+link. `DashboardLinksSubscriber` sets it on the registered widgets for the dashboard request
+only, before Kimai clones them per user, so no dashboard settings are stored:
+
+| Cards | Open | Needs |
+| ----- | ---- | ----- |
+| `DurationToday`, `DurationWeek`, `DurationMonth`, `DurationYear` (everyone's hours) | `report_weekly_users`, `report_monthly_users`, `report_yearly_users` | `report:other` |
+| `userDurationToday`, `userDurationWeek`, `userDurationMonth`, `userDurationYear` (own hours) | `report_user_week`, `report_user_month`, `report_user_year` | `report:user` |
+
+The today cards open the week, as there is no daily report.
+
 ## Requirements
 
 Kimai 2.67.0 or later. It uses the Chart.js build that Kimai ships, so it needs no assets of
