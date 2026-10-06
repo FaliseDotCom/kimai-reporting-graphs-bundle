@@ -1,0 +1,195 @@
+/* Summary report for Kimai. Builds on Kimai's Tabler theme and its colour variables. */
+
+/* Toolbar: period arrows around the date range, then the filters */
+.summary-toolbar
+{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.summary-period
+{
+  display: flex;
+  flex: 1 1 18rem;
+  max-width: 26rem;
+}
+
+.summary-period input
+{
+  border-radius: 0;
+  text-align: center;
+}
+
+.summary-filter
+{
+  flex: 0 1 14rem;
+  min-width: 10rem;
+}
+
+/* Charts: the canvas fills a box with a fixed height */
+.summary-chart
+{
+  position: relative;
+  width: 100%;
+}
+
+.summary-chart-bar
+{
+  height: 18rem;
+}
+
+.summary-chart-doughnut
+{
+  height: 16rem;
+}
+
+/* On the user reports the bar chart grows to the height of the doughnut card next to it */
+.summary-chart-fill
+{
+  display: flex;
+  flex-direction: column;
+}
+
+.summary-chart-fill > .summary-chart
+{
+  flex: 1 1 auto;
+  min-height: 18rem;
+}
+
+/* Breakdown: one expandable row per group, with its descriptions inside */
+.summary-group
+{
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+}
+
+.summary-group-header,
+.summary-description
+{
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.summary-group-header
+{
+  cursor: pointer;
+  list-style: none;
+}
+
+.summary-group-header::-webkit-details-marker
+{
+  display: none;
+}
+
+.summary-swatch
+{
+  flex: 0 0 auto;
+  width: 0.75rem;
+  height: 0.75rem;
+  border-radius: 50%;
+}
+
+.summary-group-name,
+.summary-description-text
+{
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.summary-group-duration
+{
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.summary-group-percent,
+.summary-group-rate
+{
+  flex: 0 0 4.5rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+/* Legend under the doughnut chart on the user reports */
+.summary-legend
+{
+  margin: 1rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.summary-legend-item
+{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.125rem 0;
+}
+
+.summary-legend-name
+{
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.summary-descriptions
+{
+  margin: 0.5rem 0 0;
+  padding: 0 0 0 1.5rem;
+  list-style: none;
+}
+
+.summary-description
+{
+  padding: 0.25rem 0;
+  border-top: 1px solid var(--tblr-border-color);
+}
+
+.summary-description .summary-group-duration
+{
+  font-weight: normal;
+}
+
+@media (max-width: 575.98px)
+{
+  .summary-period,
+  .summary-filter
+  {
+    flex-basis: 100%;
+    max-width: none;
+  }
+
+  .summary-group-percent
+  {
+    display: none;
+  }
+}
+
+/* Kimai's weekly, monthly and yearly user reports: indent projects under their customer and
+   activities under their project, so the levels of the table stand apart */
+#reporting-content .dataTable tr.project > td:first-child
+{
+  padding-left: 2rem;
+}
+
+#reporting-content .dataTable tr.activity > td:first-child
+{
+  padding-left: 3.5rem;
+}
+
+/* Customer and project names in the user reports link to their detail pages */
+.summary-detail-link
+{
+  color: inherit;
+}
+
+.summary-detail-link:hover
+{
+  text-decoration: underline;
+}

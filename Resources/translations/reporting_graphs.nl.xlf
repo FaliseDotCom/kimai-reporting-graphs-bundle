@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xliff xmlns="urn:oasis:names:tc:xliff:document:1.2" version="1.2">
+  <file source-language="en" target-language="nl" datatype="plaintext" original="none">
+    <body>
+      <trans-unit id="summary.title" resname="summary.title">
+        <source>summary.title</source>
+        <target>Samenvatting</target>
+      </trans-unit>
+      <trans-unit id="summary.all_users" resname="summary.all_users">
+        <source>summary.all_users</source>
+        <target>Alle gebruikers</target>
+      </trans-unit>
+      <trans-unit id="summary.group_by.project" resname="summary.group_by.project">
+        <source>summary.group_by.project</source>
+        <target>Per project</target>
+      </trans-unit>
+      <trans-unit id="summary.group_by.customer" resname="summary.group_by.customer">
+        <source>summary.group_by.customer</source>
+        <target>Per klant</target>
+      </trans-unit>
+      <trans-unit id="summary.group_by.activity" resname="summary.group_by.activity">
+        <source>summary.group_by.activity</source>
+        <target>Per activiteit</target>
+      </trans-unit>
+      <trans-unit id="summary.group_by.user" resname="summary.group_by.user">
+        <source>summary.group_by.user</source>
+        <target>Per gebruiker</target>
+      </trans-unit>
+      <trans-unit id="summary.total" resname="summary.total">
+        <source>summary.total</source>
+        <target>Totaal</target>
+      </trans-unit>
+      <trans-unit id="summary.billable" resname="summary.billable">
+        <source>summary.billable</source>
+        <target>Declarabel</target>
+      </trans-unit>
+      <trans-unit id="summary.amount" resname="summary.amount">
+        <source>summary.amount</source>
+        <target>Bedrag</target>
+      </trans-unit>
+      <trans-unit id="summary.no_description" resname="summary.no_description">
+        <source>summary.no_description</source>
+        <target>(geen omschrijving)</target>
+      </trans-unit>
+      <trans-unit id="summary.previous" resname="summary.previous">
+        <source>summary.previous</source>
+        <target>Vorige periode</target>
+      </trans-unit>
+      <trans-unit id="summary.next" resname="summary.next">
+        <source>summary.next</source>
+        <target>Volgende periode</target>
+      </trans-unit>
+      <trans-unit id="summary.chart.bar" resname="summary.chart.bar">
+        <source>summary.chart.bar</source>
+        <target>Tijd per periode</target>
+      </trans-unit>
+      <trans-unit id="summary.chart.doughnut" resname="summary.chart.doughnut">
+        <source>summary.chart.doughnut</source>
+        <target>Aandeel in de totale tijd</target>
+      </trans-unit>
+      <trans-unit id="summary.other" resname="summary.other">
+        <source>summary.other</source>
+        <target>Overig</target>
+      </trans-unit>
+      <trans-unit id="summary.view.label" resname="summary.view.label">
+        <source>summary.view.label</source>
+        <target>Andere overzichten</target>
+      </trans-unit>
+      <trans-unit id="summary.view.week" resname="summary.view.week">
+        <source>summary.view.week</source>
+        <target>Week</target>
+      </trans-unit>
+      <trans-unit id="summary.view.month" resname="summary.view.month">
+        <source>summary.view.month</source>
+        <target>Maand</target>
+      </trans-unit>
+      <trans-unit id="summary.view.year" resname="summary.view.year">
+        <source>summary.view.year</source>
+        <target>Jaar</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

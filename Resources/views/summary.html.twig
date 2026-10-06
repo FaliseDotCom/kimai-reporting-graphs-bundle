@@ -1,0 +1,155 @@
+{% extends 'reporting/layout.html.twig' %}
+{% trans_default_domain 'reporting_graphs' %}
+{% set currency = config('defaults.customer.currency') %}
+
+{% block breadcrumb %}
+  {% from 'macros/breadcrumb.html.twig' import breadcrumb %}
+  {{ breadcrumb( {
+    ('menu.reporting'|trans( {}, 'messages' )): path( 'reporting' ),
+    ('summary.title'|trans): '#'
+  } ) }}
+{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ encore_entry_link_tags('chart') }}
+  <link rel="stylesheet" href="{{ path('reporting_bundle_asset', { 'name': 'reporting.css', 'v': asset_version }) }}">
+{% endblock %}
+
+{% block head %}
+  {{ parent() }}
+  {{ encore_entry_script_tags('chart') }}
+{% endblock %}
+
+{% block javascripts %}
+  {{ parent() }}
+  <script src="{{ path('reporting_bundle_asset', { 'name': 'reporting.js', 'v': asset_version }) }}"></script>
+{% endblock %}
+
+{% block report_form_layout %}
+  <div class="summary-toolbar">
+    <div class="btn-group summary-period">
+      <a class="btn btn-icon" href="{{ path('summary_report', previous_query) }}" title="{{ 'summary.previous'|trans }}" aria-label="{{ 'summary.previous'|trans }}">
+        <i class="{{ 'left'|icon(true) }}"></i>
+      </a>
+      {{ form_widget(form.daterange) }}
+      <a class="btn btn-icon" href="{{ path('summary_report', next_query) }}" title="{{ 'summary.next'|trans }}" aria-label="{{ 'summary.next'|trans }}">
+        <i class="{{ 'right'|icon(true) }}"></i>
+      </a>
+    </div>
+    {% if form.user is defined %}
+      <div class="summary-filter">{{ form_widget(form.user) }}</div>
+    {% endif %}
+    <div class="summary-filter">{{ form_widget(form.groupBy) }}</div>
+  </div>
+{% endblock %}
+
+{% block report %}
+  <div class="row row-cards summary-totals mb-3">
+    <div class="col-sm-6 col-lg">
+      <div class="card card-sm">
+        <div class="card-body">
+          <div class="subheader">{{ 'summary.total'|trans }}</div>
+          <div class="h1 mb-0">{{ summary.totals.duration|duration }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-6 col-lg">
+      <div class="card card-sm">
+        <div class="card-body">
+          <div class="subheader">{{ 'summary.billable'|trans }}</div>
+          <div class="h1 mb-0">{{ summary.totals.billableDuration|duration }}</div>
+        </div>
+      </div>
+    </div>
+    {% if show_rates %}
+      <div class="col-sm-6 col-lg">
+        <div class="card card-sm">
+          <div class="card-body">
+            <div class="subheader">{{ 'summary.amount'|trans }}</div>
+            <div class="h1 mb-0">{{ summary.totals.rate|money(currency) }}</div>
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+  {% if summary.groups is empty %}
+    <div class="card">
+      <div class="card-body">
+        {% from 'macros/widgets.html.twig' import nothing_found %}
+        {{ nothing_found() }}
+      </div>
+    </div>
+  {% else %}
+    {% include '@ReportingGraphs/chart_data.html.twig' %}
+
+    <div class="card mb-3">
+      <div class="card-header">
+        <h3 class="card-title">{{ begin|date_short }} &ndash; {{ end|date_short }}</h3>
+      </div>
+      <div class="card-body">
+        <div class="summary-chart summary-chart-bar">
+          <canvas id="summary-bar-chart" aria-label="{{ 'summary.chart.bar'|trans }}" role="img"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="row row-cards">
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-body">
+            <div class="summary-chart summary-chart-doughnut">
+              <canvas id="summary-doughnut-chart" aria-label="{{ 'summary.chart.doughnut'|trans }}" role="img"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">{{ ('summary.group_by.' ~ group_by)|trans }}</h3>
+          </div>
+          <div class="list-group list-group-flush summary-groups">
+            {% for group in summary.groups %}
+              <details class="list-group-item summary-group">
+                <summary class="summary-group-header">
+                  <span class="summary-swatch" data-color="{{ group.color }}" data-color-dark="{{ group.colorDark }}"></span>
+                  <span class="summary-group-name">
+                    {{ group.name }}
+                    {% if group.subtitle is not empty %}
+                      <small class="text-secondary d-block">{{ group.subtitle }}</small>
+                    {% endif %}
+                  </span>
+                  <span class="summary-group-duration">{{ group.duration|duration }}</span>
+                  <span class="summary-group-percent text-secondary">{{ group.percent|number_format(1) }}%</span>
+                  {% if show_rates %}
+                    <span class="summary-group-rate text-secondary">{{ group.rate|money(currency) }}</span>
+                  {% endif %}
+                </summary>
+                <ul class="summary-descriptions">
+                  {% for description in group.descriptions %}
+                    <li class="summary-description">
+                      <span class="summary-description-text">
+                        {% if description.text is not empty %}
+                          {{ description.text }}
+                        {% else %}
+                          <em class="text-secondary">{{ 'summary.no_description'|trans }}</em>
+                        {% endif %}
+                      </span>
+                      <span class="summary-group-duration">{{ description.duration|duration }}</span>
+                      <span class="summary-group-percent" aria-hidden="true"></span>
+                      {% if show_rates %}
+                        <span class="summary-group-rate text-secondary">{{ description.rate|money(currency) }}</span>
+                      {% endif %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              </details>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}

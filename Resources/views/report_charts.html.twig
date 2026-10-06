@@ -1,0 +1,47 @@
+{# Charts added to Kimai's weekly, monthly and yearly report for one user. #}
+{% trans_default_domain 'reporting_graphs' %}
+{{ encore_entry_link_tags('chart') }}
+{{ encore_entry_script_tags('chart') }}
+<link rel="stylesheet" href="{{ path('reporting_bundle_asset', { 'name': 'reporting.css', 'v': asset_version }) }}">
+<script src="{{ path('reporting_bundle_asset', { 'name': 'reporting.js', 'v': asset_version }) }}"></script>
+
+<div class="btn-group summary-view-switch" role="group" aria-label="{{ 'summary.view.label'|trans }}" data-summary-view-switch hidden>
+  {% for link in view_links %}
+    <a class="btn" href="{{ link.url }}">{{ link.label|trans }}</a>
+  {% endfor %}
+</div>
+
+<script type="application/json" id="summary-detail-links">{{ detail_links|json_encode|raw }}</script>
+
+{% if summary.groups is not empty %}
+  <div class="row row-cards mb-3 summary-report-charts" data-summary-move-to="reporting-content">
+    {% include '@ReportingGraphs/chart_data.html.twig' %}
+    <div class="col-lg-8">
+      <div class="card h-100">
+        <div class="card-body summary-chart-fill">
+          <div class="summary-chart summary-chart-bar">
+            <canvas id="summary-bar-chart" aria-label="{{ 'summary.chart.bar'|trans }}" role="img"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="card h-100">
+        <div class="card-body">
+          <div class="summary-chart summary-chart-doughnut">
+            <canvas id="summary-doughnut-chart" aria-label="{{ 'summary.chart.doughnut'|trans }}" role="img"></canvas>
+          </div>
+          <ul class="summary-legend">
+            {% for series in summary.chartSeries %}
+              <li class="summary-legend-item">
+                <span class="summary-swatch" data-color="{{ series.color }}" data-color-dark="{{ series.colorDark }}"></span>
+                <span class="summary-legend-name">{{ series.other ? 'summary.other'|trans : series.name }}</span>
+                <span class="summary-group-duration">{{ series.duration|duration }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

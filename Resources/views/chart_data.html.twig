@@ -1,0 +1,16 @@
+{# The chart data for reporting.js, as JSON. Expects `summary` from SummaryBuilder. #}
+{% trans_default_domain 'reporting_graphs' %}
+{% set chart_data = {
+  'buckets': summary.buckets|map(bucket => bucket.label),
+  'series': summary.chartSeries|map(series => {
+    'label': series.other ? 'summary.other'|trans : series.name,
+    'color': series.color,
+    'colorDark': series.colorDark,
+    'data': series.perBucket
+  }),
+  'gridColor': config('theme.chart.grid_color'),
+  'labels': {
+    'total': 'summary.total'|trans
+  }
+} %}
+<script type="application/json" id="summary-chart-data">{{ chart_data|json_encode|raw }}</script>

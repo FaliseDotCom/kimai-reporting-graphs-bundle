@@ -1,0 +1,29 @@
+{
+  "name": "falisedotcom/kimai-reporting-graphs-bundle",
+  "description": "Reporting extras for Kimai: a summary report with charts, and charts and detail links on the weekly, monthly and yearly user reports",
+  "homepage": "https://github.com/FaliseDotCom/ha-kimai",
+  "type": "kimai-plugin",
+  "version": "1.0.0",
+  "keywords": [ "kimai", "kimai-plugin" ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Sander Falise"
+    }
+  ],
+  "extra":
+  {
+    "kimai":
+    {
+      "require": 26700,
+      "name": "Reporting extras"
+    }
+  },
+  "autoload":
+  {
+    "psr-4":
+    {
+      "KimaiPlugin\\ReportingGraphsBundle\\": ""
+    }
+  }
+}

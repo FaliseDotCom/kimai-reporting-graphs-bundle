@@ -1,0 +1,15 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  KimaiPlugin\ReportingGraphsBundle\:
+    resource: '../../*'
+    exclude:
+      - '../../Resources/'
+      - '../../Model/'
+
+  KimaiPlugin\ReportingGraphsBundle\Controller\:
+    resource: '../../Controller'
+    tags: [ 'controller.service_arguments' ]
