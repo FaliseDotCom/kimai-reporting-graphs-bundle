@@ -13,10 +13,11 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 /**
- * Serves the plugin's script and stylesheet, which Kimai's asset build does not include.
+ * Serves the plugin's script and stylesheet, which Kimai's asset build does not include. Any
+ * logged-in user may load them: the dashboard widget needs them without reporting access.
  */
 #[Route( path: '/reporting/bundle-assets' )]
-#[IsGranted( 'view_reporting' )]
+#[IsGranted( 'IS_AUTHENTICATED_REMEMBERED' )]
 final class AssetController extends AbstractController
 {
   public const ROUTE = 'reporting_bundle_asset';
