@@ -52,16 +52,18 @@ final class SummaryRepository
   }
 
   /**
-   * Returns the IDs of every user whose time the viewer may see, including disabled users.
+   * Returns the IDs of every user whose time the viewer may see.
    *
    * @param User $viewer The logged-in user.
+   * @param bool $includeDisabled Whether disabled users count too, as in Kimai's reports for all
+   *   users; Kimai's user picker leaves them out.
    * @return array<int, int>
    */
-  public function findVisibleUserIds( User $viewer ) : array
+  public function findVisibleUserIds( User $viewer, bool $includeDisabled = true ) : array
   {
     $query = new UserFormTypeQuery();
     $query->setUser( $viewer );
-    $query->setVisibility( VisibilityInterface::SHOW_BOTH );
+    $query->setVisibility( $includeDisabled ? VisibilityInterface::SHOW_BOTH : VisibilityInterface::SHOW_VISIBLE );
 
     $ids = [];
     foreach ( $this->userRepository->getQueryBuilderForFormType( $query )->getQuery()->getResult() as $user )

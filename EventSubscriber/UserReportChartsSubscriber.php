@@ -123,7 +123,8 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
       return $viewerId;
     }
 
-    return in_array( $requested, $this->repository->findVisibleUserIds( $viewer ), true ) ? $requested : $viewerId;
+    // Only users Kimai's own user picker offers, so the charts show the same user as its table.
+    return in_array( $requested, $this->repository->findVisibleUserIds( $viewer, false ), true ) ? $requested : $viewerId;
   }
 
   /**
