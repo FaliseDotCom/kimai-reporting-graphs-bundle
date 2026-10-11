@@ -12,6 +12,7 @@ use KimaiPlugin\ReportingGraphsBundle\Model\SummaryQuery;
 use KimaiPlugin\ReportingGraphsBundle\ReportingGraphsBundle;
 use KimaiPlugin\ReportingGraphsBundle\Repository\SummaryRepository;
 use KimaiPlugin\ReportingGraphsBundle\Service\HoursTotals;
+use KimaiPlugin\ReportingGraphsBundle\Service\QueryParameters;
 use KimaiPlugin\ReportingGraphsBundle\Service\SummaryBuilder;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -61,13 +62,15 @@ final class WorkingTimeWidget extends AbstractWidget
    * @param SummaryBuilder $builder Turns the records into chart data.
    * @param HoursTotals $totals Sums today, the week, its month and its year.
    * @param AuthorizationCheckerInterface $security Checks whether the reports may be opened.
+   * @param QueryParameters $parameters Reads the requested week.
    */
   public function __construct(
     private readonly RequestStack $requestStack,
     private readonly SummaryRepository $repository,
     private readonly SummaryBuilder $builder,
     private readonly HoursTotals $totals,
-    private readonly AuthorizationCheckerInterface $security
+    private readonly AuthorizationCheckerInterface $security,
+    private readonly QueryParameters $parameters
   )
   {
   }
@@ -153,7 +156,7 @@ final class WorkingTimeWidget extends AbstractWidget
     $user = $this->getUser();
     $factory = DateTimeFactory::createByUser( $user );
     $request = $this->requestStack->getMainRequest();
-    $requested = $factory->createDateTimeFromFormat( '!' . self::DATE_FORMAT, (string) $request?->query->get( self::WEEK_PARAMETER ) );
+    $requested = $factory->createDateTimeFromFormat( '!' . self::DATE_FORMAT, $this->parameters->getString( $request, self::WEEK_PARAMETER ) );
 
     $weekBegin = DateTimeImmutable::createFromMutable( $factory->getStartOfWeek( $requested === false ? $factory->createDateTime() : $requested ) );
     $begin = new DateTimeImmutable( $weekBegin->format( self::DATE_FORMAT ) );

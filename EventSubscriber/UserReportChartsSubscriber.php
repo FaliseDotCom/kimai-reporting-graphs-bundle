@@ -14,6 +14,7 @@ use KimaiPlugin\ReportingGraphsBundle\Model\SummaryQuery;
 use KimaiPlugin\ReportingGraphsBundle\ReportingGraphsBundle;
 use KimaiPlugin\ReportingGraphsBundle\Repository\SummaryRepository;
 use KimaiPlugin\ReportingGraphsBundle\Service\DetailLinks;
+use KimaiPlugin\ReportingGraphsBundle\Service\QueryParameters;
 use KimaiPlugin\ReportingGraphsBundle\Service\ReportViewLinks;
 use KimaiPlugin\ReportingGraphsBundle\Service\SummaryBuilder;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -42,6 +43,7 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
    * @param DetailLinks $detailLinks Finds the customer and project pages the viewer may open.
    * @param ReportViewLinks $viewLinks Links to the other two user reports.
    * @param Environment $twig Renders the charts.
+   * @param QueryParameters $parameters Reads the report's user and date.
    */
   public function __construct(
     private readonly RequestStack $requestStack,
@@ -51,7 +53,8 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
     private readonly SummaryBuilder $builder,
     private readonly DetailLinks $detailLinks,
     private readonly ReportViewLinks $viewLinks,
-    private readonly Environment $twig
+    private readonly Environment $twig,
+    private readonly QueryParameters $parameters
   )
   {
   }
@@ -113,7 +116,7 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
   private function getUserId( Request $request, User $viewer ) : int
   {
     $viewerId = (int) $viewer->getId();
-    $requested = $request->query->getInt( 'user' );
+    $requested = $this->parameters->getInt( $request, 'user' );
 
     if ( $requested === 0 || $requested === $viewerId || !$this->security->isGranted( 'report:other' ) )
     {
@@ -160,7 +163,7 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
    */
   private function getRequestedDate( Request $request, DateTimeFactory $factory ) : ?DateTimeInterface
   {
-    $value = (string) $request->query->get( 'date' );
+    $value = $this->parameters->getString( $request, 'date' );
     $date = $value === '' ? false : $factory->createDateTimeFromFormat( '!Y-m-d', $value );
 
     return $date === false ? null : $date;
