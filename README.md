@@ -63,7 +63,9 @@ widget.
 
 Kimai's duration cards on the dashboard support a `route` option that turns their icon into a
 link. `DashboardLinksSubscriber` sets it on the registered widgets for the dashboard request
-only, before Kimai clones them per user, so no dashboard settings are stored:
+only, before Kimai clones them per user, so no dashboard settings are stored. This relies on a
+fresh service container per request, as with PHP-FPM or Apache; under a persistent worker
+runtime the option would carry over to other requests:
 
 | Cards | Open | Needs |
 | ----- | ---- | ----- |
