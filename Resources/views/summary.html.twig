@@ -131,7 +131,9 @@
                   {% for description in group.descriptions %}
                     <li class="summary-description">
                       <span class="summary-description-text">
-                        {% if description.hidden %}
+                        {% if description.more > 0 %}
+                          <em class="text-secondary">{{ 'summary.more_descriptions'|trans({ '%count%': description.more }) }}</em>
+                        {% elseif description.hidden %}
                           <em class="text-secondary">{{ 'summary.hidden_description'|trans }}</em>
                         {% elseif description.text is not empty %}
                           {{ description.text }}

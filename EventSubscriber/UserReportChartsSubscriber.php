@@ -92,7 +92,7 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
 
     $userId = $this->getUserId( $request, $viewer );
     [ $begin, $end ] = $this->getPeriod( (string) $route, $request, $viewer );
-    $rows = $this->repository->findRows( $begin, $end, [ $userId ] );
+    $rows = $this->repository->findRows( $begin, $end, [ $userId ], $this->builder->isPerMonth( $begin, $end ) );
 
     $event->addContent( $this->twig->render( '@ReportingGraphs/report_charts.html.twig', [
       'summary' => $this->builder->build( $rows, $begin, $end, SummaryQuery::GROUP_PROJECT, $request->getLocale() ),

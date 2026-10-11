@@ -109,24 +109,26 @@ final class SummaryRepository
   }
 
   /**
-   * Returns finished time records between two days, summed per day, project, activity, user
-   * and description.
+   * Returns finished time records between two days, summed per day (or per month), project,
+   * activity, user and description. Summing per month keeps long periods to far fewer rows;
+   * each row's day is then a day in its month.
    *
    * @param DateTimeInterface $begin The first day to include.
    * @param DateTimeInterface $end The last day to include.
    * @param array<int, int> $userIds The users to include.
+   * @param bool $perMonth Whether to sum per month instead of per day.
    * @return array<int, SummaryRow>
    */
-  public function findRows( DateTimeInterface $begin, DateTimeInterface $end, array $userIds ) : array
+  public function findRows( DateTimeInterface $begin, DateTimeInterface $end, array $userIds, bool $perMonth = false ) : array
   {
     if ( empty( $userIds ) )
     {
       return [];
     }
 
-    $rows = $this->entityManager->createQueryBuilder()
+    $query = $this->entityManager->createQueryBuilder()
       ->select(
-        't.date AS day',
+        $perMonth ? 'MIN( t.date ) AS day' : 't.date AS day',
         'p.id AS projectId',
         'p.name AS projectName',
         'p.color AS projectColor',
@@ -152,8 +154,20 @@ final class SummaryRepository
       ->join( 't.user', 'u' )
       ->where( 't.end IS NOT NULL' )
       ->andWhere( 't.date BETWEEN :begin AND :end' )
-      ->andWhere( 'u.id IN ( :users )' )
-      ->groupBy( 't.date' )
+      ->andWhere( 'u.id IN ( :users )' );
+
+    if ( $perMonth )
+    {
+      // DQL groups by result variables, not by expressions.
+      $query->addSelect( 'YEAR( t.date ) AS HIDDEN bucketYear', 'MONTH( t.date ) AS HIDDEN bucketMonth' )
+        ->groupBy( 'bucketYear, bucketMonth' );
+    }
+    else
+    {
+      $query->groupBy( 't.date' );
+    }
+
+    $rows = $query
       ->addGroupBy( 'p.id, p.name, p.color, c.id, c.name, c.color' )
       ->addGroupBy( 'a.id, a.name, a.color, u.id, u.username, u.alias, u.color' )
       ->addGroupBy( 't.description' )

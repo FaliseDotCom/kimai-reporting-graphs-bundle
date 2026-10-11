@@ -17,7 +17,7 @@ use KimaiPlugin\ReportingGraphsBundle\Repository\SummaryRepository;
  *
  * @phpstan-import-type SummaryRow from SummaryRepository
  * @phpstan-type Bucket array{key: string, label: string, duration: int}
- * @phpstan-type Description array{text: string, hidden: bool, duration: int, rate: float}
+ * @phpstan-type Description array{text: string, hidden: bool, more: int, duration: int, rate: float}
  * @phpstan-type Group array{
  *   key: string,
  *   name: string,
@@ -65,6 +65,13 @@ final class SummaryBuilder
    * @var int
    */
   private const MAX_CHART_SERIES = 8;
+
+  /**
+   * Most descriptions a group lists; beyond this the shortest are combined into one line.
+   *
+   * @var int
+   */
+  private const MAX_DESCRIPTIONS = 50;
 
   /**
    * Key of the line that holds a group's records whose descriptions the viewer may not see;
@@ -122,7 +129,7 @@ final class SummaryBuilder
       }
 
       $text = $row[ 'hidden' ] ? self::HIDDEN_KEY : $row[ 'description' ];
-      $descriptions[ $key ][ $text ] ??= [ 'text' => $row[ 'description' ], 'hidden' => $row[ 'hidden' ], 'duration' => 0, 'rate' => 0.0 ];
+      $descriptions[ $key ][ $text ] ??= [ 'text' => $row[ 'description' ], 'hidden' => $row[ 'hidden' ], 'more' => 0, 'duration' => 0, 'rate' => 0.0 ];
       $descriptions[ $key ][ $text ][ 'duration' ] += $row[ 'duration' ];
       $descriptions[ $key ][ $text ][ 'rate' ] += $row[ 'rate' ];
 
@@ -134,7 +141,7 @@ final class SummaryBuilder
     foreach ( $groups as $key => $group )
     {
       $groups[ $key ][ 'percent' ] = $totals[ 'duration' ] > 0 ? $group[ 'duration' ] / $totals[ 'duration' ] * 100 : 0.0;
-      $groups[ $key ][ 'descriptions' ] = $this->sortByDuration( array_values( $descriptions[ $key ] ?? [] ) );
+      $groups[ $key ][ 'descriptions' ] = $this->limitDescriptions( $this->sortByDuration( array_values( $descriptions[ $key ] ?? [] ) ) );
     }
 
     $groups = $this->applyColors( $this->sortByDuration( array_values( $groups ) ) );
@@ -228,9 +235,46 @@ final class SummaryBuilder
    */
   private function getGranularity( DateTimeImmutable $begin, DateTimeImmutable $end ) : string
   {
-    $days = (int) $begin->diff( $end )->days + 1;
+    return $this->isPerMonth( $begin, $end ) ? self::GRANULARITY_MONTH : self::GRANULARITY_DAY;
+  }
 
-    return $days <= self::MAX_DAILY_BUCKETS ? self::GRANULARITY_DAY : self::GRANULARITY_MONTH;
+  /**
+   * Tells whether a period is charted per month, so its records can be summed per month.
+   *
+   * @param DateTimeImmutable $begin The first day of the period.
+   * @param DateTimeImmutable $end The last day of the period.
+   * @return bool
+   */
+  public function isPerMonth( DateTimeImmutable $begin, DateTimeImmutable $end ) : bool
+  {
+    return (int) $begin->diff( $end )->days + 1 > self::MAX_DAILY_BUCKETS;
+  }
+
+  /**
+   * Keeps the longest descriptions of a group, and combines the rest into one line that counts
+   * them, so a group with very many descriptions stays readable and quick to show.
+   *
+   * @param array<int, Description> $descriptions The group's descriptions, longest first.
+   * @return array<int, Description>
+   */
+  private function limitDescriptions( array $descriptions ) : array
+  {
+    if ( count( $descriptions ) <= self::MAX_DESCRIPTIONS )
+    {
+      return $descriptions;
+    }
+
+    $kept = array_slice( $descriptions, 0, self::MAX_DESCRIPTIONS - 1 );
+    $rest = array_slice( $descriptions, self::MAX_DESCRIPTIONS - 1 );
+    $kept[] = [
+      'text' => '',
+      'hidden' => false,
+      'more' => count( $rest ),
+      'duration' => array_sum( array_column( $rest, 'duration' ) ),
+      'rate' => array_sum( array_column( $rest, 'rate' ) ),
+    ];
+
+    return $kept;
   }
 
   /**

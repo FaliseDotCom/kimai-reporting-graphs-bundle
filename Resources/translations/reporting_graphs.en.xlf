@@ -46,6 +46,10 @@
         <source>summary.hidden_description</source>
         <target>(records outside your teams)</target>
       </trans-unit>
+      <trans-unit id="summary.more_descriptions" resname="summary.more_descriptions">
+        <source>summary.more_descriptions</source>
+        <target>%count% more descriptions</target>
+      </trans-unit>
       <trans-unit id="summary.previous" resname="summary.previous">
         <source>summary.previous</source>
         <target>Previous period</target>

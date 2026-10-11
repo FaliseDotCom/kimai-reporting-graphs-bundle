@@ -73,7 +73,8 @@ final class SummaryController extends AbstractController
 
     $userIds = $this->getUserIds( $query, $viewer, $canSelectUser );
     [ $begin, $end ] = $this->getPeriod( $query->getDateRange(), $userIds, $factory );
-    $rows = $this->restrictedDescriptions->hide( $this->repository->findRows( $begin, $end, $userIds ), $viewer );
+    $rows = $this->repository->findRows( $begin, $end, $userIds, $this->builder->isPerMonth( $begin, $end ) );
+    $rows = $this->restrictedDescriptions->hide( $rows, $viewer );
 
     return $this->render( '@ReportingGraphs/summary.html.twig', [
       'form' => $form->createView(),
