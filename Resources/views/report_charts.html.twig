@@ -11,7 +11,8 @@
   {% endfor %}
 </div>
 
-<script type="application/json" id="summary-detail-links">{{ detail_links|json_encode|raw }}</script>
+{# JSON_HEX_TAG keeps names such as "<!--<script>" from ending or hiding the script element. #}
+<script type="application/json" id="summary-detail-links">{{ detail_links|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
 
 {% if summary.groups is not empty %}
   <div class="row row-cards mb-3 summary-report-charts" data-summary-move-to="reporting-content">

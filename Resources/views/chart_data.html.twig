@@ -13,4 +13,5 @@
     'total': 'summary.total'|trans
   }
 } %}
-<script type="application/json" id="summary-chart-data">{{ chart_data|json_encode|raw }}</script>
+{# JSON_HEX_TAG keeps names such as "<!--<script>" from ending or hiding the script element. #}
+<script type="application/json" id="summary-chart-data">{{ chart_data|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
