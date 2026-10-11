@@ -96,6 +96,9 @@ There are no database changes.
 
 "Other users' reports" is Kimai's `report:other` check: `view_other_reporting` plus
 `view_other_timesheet`. Team leads only see their team members, as in Kimai's own reports.
+A team member's records on a project, customer or activity limited to teams the viewer is not
+in count in the totals, as in Kimai's reports, but their descriptions are hidden: Kimai's lists
+and exports hide those records from the viewer.
 
 ## Translations
 

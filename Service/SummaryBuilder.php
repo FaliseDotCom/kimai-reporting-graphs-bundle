@@ -17,7 +17,7 @@ use KimaiPlugin\ReportingGraphsBundle\Repository\SummaryRepository;
  *
  * @phpstan-import-type SummaryRow from SummaryRepository
  * @phpstan-type Bucket array{key: string, label: string, duration: int}
- * @phpstan-type Description array{text: string, duration: int, rate: float}
+ * @phpstan-type Description array{text: string, hidden: bool, duration: int, rate: float}
  * @phpstan-type Group array{
  *   key: string,
  *   name: string,
@@ -67,6 +67,14 @@ final class SummaryBuilder
   private const MAX_CHART_SERIES = 8;
 
   /**
+   * Key of the line that holds a group's records whose descriptions the viewer may not see;
+   * no description can match it.
+   *
+   * @var string
+   */
+  private const HIDDEN_KEY = "\0hidden";
+
+  /**
    * @param ChartColors $chartColors Picks colours that can be told apart.
    */
   public function __construct( private readonly ChartColors $chartColors )
@@ -113,8 +121,8 @@ final class SummaryBuilder
         $buckets[ $index ][ 'duration' ] += $row[ 'duration' ];
       }
 
-      $text = $row[ 'description' ];
-      $descriptions[ $key ][ $text ] ??= [ 'text' => $text, 'duration' => 0, 'rate' => 0.0 ];
+      $text = $row[ 'hidden' ] ? self::HIDDEN_KEY : $row[ 'description' ];
+      $descriptions[ $key ][ $text ] ??= [ 'text' => $row[ 'description' ], 'hidden' => $row[ 'hidden' ], 'duration' => 0, 'rate' => 0.0 ];
       $descriptions[ $key ][ $text ][ 'duration' ] += $row[ 'duration' ];
       $descriptions[ $key ][ $text ][ 'rate' ] += $row[ 'rate' ];
 

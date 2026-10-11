@@ -15,6 +15,7 @@ use KimaiPlugin\ReportingGraphsBundle\Model\SummaryQuery;
 use KimaiPlugin\ReportingGraphsBundle\ReportingGraphsBundle;
 use KimaiPlugin\ReportingGraphsBundle\Repository\SummaryRepository;
 use KimaiPlugin\ReportingGraphsBundle\Service\PeriodNavigator;
+use KimaiPlugin\ReportingGraphsBundle\Service\RestrictedDescriptions;
 use KimaiPlugin\ReportingGraphsBundle\Service\SummaryBuilder;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,11 +35,13 @@ final class SummaryController extends AbstractController
    * @param SummaryRepository $repository Reads the aggregated time records.
    * @param SummaryBuilder $builder Turns the records into totals and chart data.
    * @param PeriodNavigator $navigator Calculates the previous and next periods.
+   * @param RestrictedDescriptions $restrictedDescriptions Hides what the viewer's teams may not see.
    */
   public function __construct(
     private readonly SummaryRepository $repository,
     private readonly SummaryBuilder $builder,
-    private readonly PeriodNavigator $navigator
+    private readonly PeriodNavigator $navigator,
+    private readonly RestrictedDescriptions $restrictedDescriptions
   )
   {
   }
@@ -70,7 +73,7 @@ final class SummaryController extends AbstractController
 
     $userIds = $this->getUserIds( $query, $viewer, $canSelectUser );
     [ $begin, $end ] = $this->getPeriod( $query->getDateRange(), $userIds, $factory );
-    $rows = $this->repository->findRows( $begin, $end, $userIds );
+    $rows = $this->restrictedDescriptions->hide( $this->repository->findRows( $begin, $end, $userIds ), $viewer );
 
     return $this->render( '@ReportingGraphs/summary.html.twig', [
       'form' => $form->createView(),

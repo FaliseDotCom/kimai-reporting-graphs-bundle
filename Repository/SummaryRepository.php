@@ -32,6 +32,7 @@ use Doctrine\ORM\EntityManagerInterface;
  *   userAlias: string,
  *   userColor: string,
  *   description: string,
+ *   hidden: bool,
  *   duration: int,
  *   billableDuration: int,
  *   rate: float
@@ -193,6 +194,7 @@ final class SummaryRepository
       'userAlias' => $this->cleanString( $row[ 'userAlias' ] ),
       'userColor' => $this->cleanString( $row[ 'userColor' ] ),
       'description' => $this->cleanString( $row[ 'description' ] ),
+      'hidden' => false,
       'duration' => (int) $row[ 'duration' ],
       'billableDuration' => (int) $row[ 'billableDuration' ],
       'rate' => (float) $row[ 'rate' ],
