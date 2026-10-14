@@ -9,7 +9,7 @@ Kimai's **Weekly view for one user**, **Monthly view for one user** and **Yearly
 user** get two charts above their table:
 
 - a bar chart of the hours per day (per month in the yearly view), stacked by project;
-- a doughnut chart of each project's share of the period.
+- a doughnut chart of each project's share of the period, with the total time in its centre.
 
 The charts follow the period and user picked in the report, including a financial year when
 one is configured. In the table, customer and project names link to their detail pages for
@@ -26,7 +26,7 @@ that contains the current period's first day.
 
 - totals for the period: total time, billable time and, with permission, the amount;
 - a stacked bar chart of the time per day (periods up to 62 days) or per month;
-- a doughnut chart of each group's share;
+- a doughnut chart of each group's share, with the total time in its centre;
 - a breakdown per project, customer, activity or user that opens to show the time per
   description.
 

@@ -29,18 +29,7 @@
     <div class="col-lg-4">
       <div class="card h-100">
         <div class="card-body">
-          <div class="summary-chart summary-chart-doughnut">
-            <canvas id="summary-doughnut-chart" aria-label="{{ 'summary.chart.doughnut'|trans }}" role="img"></canvas>
-          </div>
-          <ul class="summary-legend">
-            {% for series in summary.chartSeries %}
-              <li class="summary-legend-item">
-                <span class="summary-swatch" data-color="{{ series.color }}" data-color-dark="{{ series.colorDark }}"></span>
-                <span class="summary-legend-name">{{ series.other ? 'summary.other'|trans : series.name }}</span>
-                <span class="summary-group-duration">{{ series.duration|duration }}</span>
-              </li>
-            {% endfor %}
-          </ul>
+          {% include '@ReportingGraphs/doughnut_chart.html.twig' with { 'legend': true } %}
         </div>
       </div>
     </div>

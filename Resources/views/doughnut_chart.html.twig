@@ -1,0 +1,22 @@
+{# The doughnut chart of each group's share with the total time in its hole, and with `legend`
+   set, a legend below it. Expects `summary` from SummaryBuilder. #}
+{% trans_default_domain 'reporting_graphs' %}
+<div class="summary-chart summary-chart-doughnut">
+  {# Before the canvas, so the chart's tooltips are drawn over the total. #}
+  <div class="summary-chart-center">
+    <span class="summary-chart-total">{{ summary.totals.duration|duration }}</span>
+    <span class="text-secondary">{{ 'summary.total'|trans }}</span>
+  </div>
+  <canvas id="summary-doughnut-chart" aria-label="{{ 'summary.chart.doughnut'|trans }}" role="img"></canvas>
+</div>
+{% if legend|default(false) %}
+  <ul class="summary-legend">
+    {% for series in summary.chartSeries %}
+      <li class="summary-legend-item">
+        <span class="summary-swatch" data-color="{{ series.color }}" data-color-dark="{{ series.colorDark }}"></span>
+        <span class="summary-legend-name">{{ series.other ? 'summary.other'|trans : series.name }}</span>
+        <span class="summary-group-duration">{{ series.duration|duration }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}

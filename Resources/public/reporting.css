@@ -43,6 +43,31 @@
 .summary-chart-doughnut
 {
   height: 16rem;
+  container-type: size;
+}
+
+/* Total time in the hole of the doughnut; the canvas stacks above it for the tooltips */
+.summary-chart-doughnut > canvas
+{
+  position: relative;
+}
+
+.summary-chart-center
+{
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+}
+
+.summary-chart-total
+{
+  font-size: clamp(1rem, 12cqmin, 2rem);
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
 }
 
 /* On the user reports the bar chart grows to the height of the doughnut card next to it */
