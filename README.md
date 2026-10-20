@@ -32,9 +32,9 @@ for. In the table, projects are indented under their customer, and customer and 
 link to their detail pages for users who may view them.
 
 Next to the period picker, buttons switch to the other three reports for the same user and
-summing mode: the yearly view gets **Week**, **Month** and **Quarter**, and so on. The new report opens
-on the period that contains today if the current period does, and otherwise on the period
-that contains the current period's first day.
+summing mode: the yearly view gets **Week**, **Month** and **Quarter**, and so on. The new
+report opens on the period that contains today if the current period does, and otherwise on
+the period that contains the current period's first day.
 
 ## Summary report
 
@@ -97,6 +97,10 @@ Kimai 2.67.0 or later. It uses the Chart.js build that Kimai ships, so it needs 
 its own beyond one script and one stylesheet, which the plugin serves itself. Any logged-in
 user may load them, as the dashboard widget needs them without access to the reports.
 Browsers keep them for a day, and a release changes the version in their address.
+
+The quarterly reports build on Kimai's own report code: its user report controller base
+class, its statistics service and its yearly report templates. A Kimai release that changes
+those may need a matching plugin update; check the quarterly reports after upgrading Kimai.
 
 ## Installation
 
