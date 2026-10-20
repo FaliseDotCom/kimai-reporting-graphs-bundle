@@ -11,6 +11,17 @@
   {% endfor %}
 </div>
 
+{# Sort buttons for the table's customer and total columns, moved into its header by reporting.js. #}
+<div data-summary-sort-buttons hidden>
+  <button type="button" class="summary-sort" data-summary-sort="name">
+    {{ 'summary.sort.customer'|trans }}
+    <i class="summary-sort-icon fas fa-sort" aria-hidden="true"></i>
+  </button>
+  <button type="button" class="summary-sort" data-summary-sort="total">
+    <i class="summary-sort-icon fas fa-sort" aria-hidden="true"></i>
+  </button>
+</div>
+
 {# JSON_HEX_TAG keeps names such as "<!--<script>" from ending or hiding the script element. #}
 <script type="application/json" id="summary-detail-links">{{ detail_links|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>
 

@@ -31,6 +31,15 @@ one is configured, and show the same user as Kimai's table, also when a disabled
 for. In the table, projects are indented under their customer, and customer and project names
 link to their detail pages for users who may view them.
 
+The **Customer** and **Total** headings of the table sort it by name (A to Z first) or by its
+totals (largest first); a second click reverses the order. Projects and activities are
+sorted within their customer and project. The choice is kept in the browser's local storage,
+so it carries over to the next report; without storage it lasts until the page is left.
+
+Each duration in the doughnut chart's legend links to the records it counts, the same address
+as the project's total in Kimai's table. The **Other** item opens the records of all the
+projects it combines. The legend only links projects that the table links.
+
 Next to the period picker, buttons switch to the other three reports for the same user and
 summing mode: the yearly view gets **Week**, **Month** and **Quarter**, and so on. The new
 report opens on the period that contains today if the current period does, and otherwise on

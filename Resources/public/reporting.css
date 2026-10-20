@@ -219,6 +219,41 @@
   text-decoration: underline;
 }
 
+/* Sort buttons in the header of the user reports' table, styled like the heading they replace */
+.summary-sort
+{
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.summary-sort:hover,
+th[aria-sort="ascending"] > .summary-sort,
+th[aria-sort="descending"] > .summary-sort
+{
+  color: var(--tblr-primary);
+}
+
+.summary-sort:focus-visible
+{
+  border-radius: var(--tblr-border-radius-sm);
+  outline: 2px solid var(--tblr-primary);
+  outline-offset: 2px;
+}
+
+.summary-sort-icon
+{
+  opacity: 0.6;
+}
+
 /* Dashboard widget: totals in the footer link to the user reports */
 .summary-widget-total
 {

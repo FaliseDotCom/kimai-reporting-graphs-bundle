@@ -31,7 +31,7 @@ use KimaiPlugin\ReportingGraphsBundle\Repository\SummaryRepository;
  *   perBucket: array<int, int>,
  *   descriptions: array<int, Description>
  * }
- * @phpstan-type ChartSeries array{name: string, other: bool, color: string, colorDark: string, duration: int, perBucket: array<int, int>}
+ * @phpstan-type ChartSeries array{name: string, other: bool, keys: array<int, string>, color: string, colorDark: string, duration: int, perBucket: array<int, int>}
  * @phpstan-type Summary array{
  *   granularity: string,
  *   totals: array{duration: int, billableDuration: int, rate: float},
@@ -176,7 +176,8 @@ final class SummaryBuilder
 
   /**
    * Returns the series to chart: every group, or the largest ones plus one "other" series
-   * that combines the rest when there are too many to tell apart.
+   * that combines the rest when there are too many to tell apart. Each series lists the keys
+   * of the groups it covers.
    *
    * @param array<int, Group> $groups Groups, largest first.
    * @param int $bucketCount The number of buckets in the period.
@@ -188,6 +189,7 @@ final class SummaryBuilder
     $other = [
       'name' => '',
       'other' => true,
+      'keys' => [],
       'color' => ChartColors::OTHER[ 0 ],
       'colorDark' => ChartColors::OTHER[ 1 ],
       'duration' => 0,
@@ -202,6 +204,7 @@ final class SummaryBuilder
         $series[] = [
           'name' => $group[ 'name' ],
           'other' => false,
+          'keys' => [ $group[ 'key' ] ],
           'color' => $group[ 'color' ],
           'colorDark' => $group[ 'colorDark' ],
           'duration' => $group[ 'duration' ],
@@ -211,6 +214,7 @@ final class SummaryBuilder
         continue;
       }
 
+      $other[ 'keys' ][] = $group[ 'key' ];
       $other[ 'duration' ] += $group[ 'duration' ];
       foreach ( $group[ 'perBucket' ] as $bucket => $duration )
       {

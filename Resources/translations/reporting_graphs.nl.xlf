@@ -90,6 +90,10 @@
         <source>summary.view.quarter</source>
         <target>Kwartaal</target>
       </trans-unit>
+      <trans-unit id="summary.sort.customer" resname="summary.sort.customer">
+        <source>summary.sort.customer</source>
+        <target>Klant</target>
+      </trans-unit>
       <trans-unit id="quarter.label" resname="quarter.label">
         <source>quarter.label</source>
         <target>K%quarter% %year%</target>
