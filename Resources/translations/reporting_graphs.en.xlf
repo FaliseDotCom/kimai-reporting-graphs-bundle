@@ -86,6 +86,22 @@
         <source>summary.view.year</source>
         <target>Year</target>
       </trans-unit>
+      <trans-unit id="summary.view.quarter" resname="summary.view.quarter">
+        <source>summary.view.quarter</source>
+        <target>Quarter</target>
+      </trans-unit>
+      <trans-unit id="quarter.label" resname="quarter.label">
+        <source>quarter.label</source>
+        <target>Q%quarter% %year%</target>
+      </trans-unit>
+      <trans-unit id="quarter.report_user" resname="quarter.report_user">
+        <source>quarter.report_user</source>
+        <target>Quarterly view for one user</target>
+      </trans-unit>
+      <trans-unit id="quarter.report_users" resname="quarter.report_users">
+        <source>quarter.report_users</source>
+        <target>Quarterly view for all users</target>
+      </trans-unit>
       <trans-unit id="widget.working_time" resname="widget.working_time">
         <source>widget.working_time</source>
         <target>Your working hours by project per week</target>

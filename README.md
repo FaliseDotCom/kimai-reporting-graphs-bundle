@@ -1,14 +1,29 @@
 # Reporting extras for Kimai
 
-Additions to [Kimai](https://www.kimai.org/)'s **Reporting** section: charts and detail links
-on the user reports, and a summary report.
+Additions to [Kimai](https://www.kimai.org/)'s **Reporting** section: quarterly reports, charts
+and detail links on the user reports, and a summary report.
+
+## Quarterly reports
+
+**Quarterly view for one user** and **Quarterly view for all users** are Kimai's yearly
+reports for one quarter: a column per month, the same filters, and the same spreadsheet
+download. Quarters are calendar quarters (January to March, and so on), named **Q1 2026** to
+**Q4 2026**. The period picker steps a quarter back or forward with its arrows, and its menu
+offers the current quarter and the eleven before it. The report for one user needs
+`report:user`; the report for all users needs `report:other`, like Kimai's own. In the report
+for all users, a user's total opens their quarterly report and a month opens their monthly
+report.
+
+Kimai lists reports added by plugins after its own, so the quarterly reports appear after
+Kimai's reports in the overview rather than next to the monthly and yearly ones.
 
 ## Charts on the user reports
 
 Kimai's **Weekly view for one user**, **Monthly view for one user** and **Yearly view for one
-user** get two charts above their table:
+user**, and the **Quarterly view for one user**, get two charts above their table:
 
-- a bar chart of the hours per day (per month in the yearly view), stacked by project;
+- a bar chart of the hours per day (per month in the quarterly and yearly view), stacked by
+  project;
 - a doughnut chart of each project's share of the period, with the total time in its centre.
 
 The charts follow the period and user picked in the report, including a financial year when
@@ -16,8 +31,8 @@ one is configured, and show the same user as Kimai's table, also when a disabled
 for. In the table, projects are indented under their customer, and customer and project names
 link to their detail pages for users who may view them.
 
-Next to the period picker, buttons switch to the other two reports for the same user and
-summing mode: the yearly view gets **Week** and **Month**, and so on. The new report opens
+Next to the period picker, buttons switch to the other three reports for the same user and
+summing mode: the yearly view gets **Week**, **Month** and **Quarter**, and so on. The new report opens
 on the period that contains today if the current period does, and otherwise on the period
 that contains the current period's first day.
 

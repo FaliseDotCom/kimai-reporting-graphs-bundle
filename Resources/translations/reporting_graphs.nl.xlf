@@ -86,6 +86,22 @@
         <source>summary.view.year</source>
         <target>Jaar</target>
       </trans-unit>
+      <trans-unit id="summary.view.quarter" resname="summary.view.quarter">
+        <source>summary.view.quarter</source>
+        <target>Kwartaal</target>
+      </trans-unit>
+      <trans-unit id="quarter.label" resname="quarter.label">
+        <source>quarter.label</source>
+        <target>K%quarter% %year%</target>
+      </trans-unit>
+      <trans-unit id="quarter.report_user" resname="quarter.report_user">
+        <source>quarter.report_user</source>
+        <target>Kwartaaloverzicht voor één gebruiker</target>
+      </trans-unit>
+      <trans-unit id="quarter.report_users" resname="quarter.report_users">
+        <source>quarter.report_users</source>
+        <target>Kwartaaloverzicht voor alle gebruikers</target>
+      </trans-unit>
       <trans-unit id="widget.working_time" resname="widget.working_time">
         <source>widget.working_time</source>
         <target>Je werkuren per project per week</target>

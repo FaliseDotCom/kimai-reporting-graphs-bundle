@@ -10,10 +10,12 @@ use App\Event\ThemeEvent;
 use App\Timesheet\DateTimeFactory;
 use DateTimeImmutable;
 use DateTimeInterface;
+use KimaiPlugin\ReportingGraphsBundle\Controller\UserQuarterController;
 use KimaiPlugin\ReportingGraphsBundle\Model\SummaryQuery;
 use KimaiPlugin\ReportingGraphsBundle\ReportingGraphsBundle;
 use KimaiPlugin\ReportingGraphsBundle\Repository\SummaryRepository;
 use KimaiPlugin\ReportingGraphsBundle\Service\DetailLinks;
+use KimaiPlugin\ReportingGraphsBundle\Service\QuarterPeriod;
 use KimaiPlugin\ReportingGraphsBundle\Service\QueryParameters;
 use KimaiPlugin\ReportingGraphsBundle\Service\ReportViewLinks;
 use KimaiPlugin\ReportingGraphsBundle\Service\SummaryBuilder;
@@ -24,14 +26,15 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
 
 /**
- * Adds a bar chart per day (or month) and a doughnut chart per project to Kimai's weekly,
- * monthly and yearly report for one user, and links its customers and projects to their
- * detail pages, and adds buttons to switch to the other two reports.
+ * Adds a bar chart per day (or month) and a doughnut chart per project to the weekly, monthly,
+ * quarterly and yearly report for one user, and links its customers and projects to their
+ * detail pages, and adds buttons to switch to the other reports.
  */
 final class UserReportChartsSubscriber implements EventSubscriberInterface
 {
   public const ROUTE_WEEK = 'report_user_week';
   public const ROUTE_MONTH = 'report_user_month';
+  public const ROUTE_QUARTER = UserQuarterController::ROUTE;
   public const ROUTE_YEAR = 'report_user_year';
 
   /**
@@ -41,9 +44,10 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
    * @param SummaryRepository $repository Reads the aggregated time records.
    * @param SummaryBuilder $builder Turns the records into chart data.
    * @param DetailLinks $detailLinks Finds the customer and project pages the viewer may open.
-   * @param ReportViewLinks $viewLinks Links to the other two user reports.
+   * @param ReportViewLinks $viewLinks Links to the other user reports.
    * @param Environment $twig Renders the charts.
    * @param QueryParameters $parameters Reads the report's user and date.
+   * @param QuarterPeriod $quarters Calculates the quarterly report's period.
    */
   public function __construct(
     private readonly RequestStack $requestStack,
@@ -54,7 +58,8 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
     private readonly DetailLinks $detailLinks,
     private readonly ReportViewLinks $viewLinks,
     private readonly Environment $twig,
-    private readonly QueryParameters $parameters
+    private readonly QueryParameters $parameters,
+    private readonly QuarterPeriod $quarters
   )
   {
   }
@@ -83,7 +88,7 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
     $request = $this->requestStack->getMainRequest();
     $route = $request?->attributes->get( '_route' );
 
-    if ( !$viewer instanceof User || $request === null || !in_array( $route, [ self::ROUTE_WEEK, self::ROUTE_MONTH, self::ROUTE_YEAR ], true ) )
+    if ( !$viewer instanceof User || $request === null || !in_array( $route, [ self::ROUTE_WEEK, self::ROUTE_MONTH, self::ROUTE_QUARTER, self::ROUTE_YEAR ], true ) )
     {
       return;
     }
@@ -148,6 +153,13 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
     if ( $route === self::ROUTE_MONTH )
     {
       return $this->toDays( $factory->getStartOfMonth( $date ), $factory->getEndOfMonth( $date ) );
+    }
+
+    if ( $route === self::ROUTE_QUARTER )
+    {
+      $day = $date ?? $factory->create();
+
+      return $this->toDays( $this->quarters->getStart( $day ), $this->quarters->getEnd( $day ) );
     }
 
     $start = $date ?? $this->getDefaultYearStart( $factory );

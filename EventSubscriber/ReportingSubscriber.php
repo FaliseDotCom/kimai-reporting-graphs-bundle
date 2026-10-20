@@ -6,13 +6,15 @@ namespace KimaiPlugin\ReportingGraphsBundle\EventSubscriber;
 
 use App\Event\ReportingEvent;
 use App\Reporting\Report;
+use KimaiPlugin\ReportingGraphsBundle\Controller\ReportUsersQuarterController;
 use KimaiPlugin\ReportingGraphsBundle\Controller\SummaryController;
+use KimaiPlugin\ReportingGraphsBundle\Controller\UserQuarterController;
 use KimaiPlugin\ReportingGraphsBundle\ReportingGraphsBundle;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * Adds the summary report to Kimai's reporting overview.
+ * Adds the quarterly reports and the summary report to Kimai's reporting overview.
  */
 final class ReportingSubscriber implements EventSubscriberInterface
 {
@@ -31,7 +33,35 @@ final class ReportingSubscriber implements EventSubscriberInterface
   private const REPORT_ICON = 'fas fa-chart-pie';
 
   /**
-   * @param AuthorizationCheckerInterface $security Checks whether the user may see the report.
+   * The ID of the quarterly report for one user in the reporting overview.
+   *
+   * @var string
+   */
+  private const QUARTER_USER_ID = 'quarter_by_user';
+
+  /**
+   * The ID of the quarterly report for all users in the reporting overview.
+   *
+   * @var string
+   */
+  private const QUARTER_USERS_ID = 'quarterly_users_list';
+
+  /**
+   * Kimai's icon for its reports about one user, so the quarterly one looks the same.
+   *
+   * @var string
+   */
+  private const USER_ICON = 'user';
+
+  /**
+   * Kimai's icon for its reports about all users, so the quarterly one looks the same.
+   *
+   * @var string
+   */
+  private const USERS_ICON = 'users';
+
+  /**
+   * @param AuthorizationCheckerInterface $security Checks whether the user may see the reports.
    */
   public function __construct( private readonly AuthorizationCheckerInterface $security )
   {
@@ -50,7 +80,8 @@ final class ReportingSubscriber implements EventSubscriberInterface
   }
 
   /**
-   * Adds the report for users who may see their own reports.
+   * Adds the reports the user may see: the quarterly report for one user and the summary with
+   * report:user, and the quarterly report for all users with report:other as well.
    *
    * @param ReportingEvent $event The event that collects the available reports.
    * @return void
@@ -62,12 +93,27 @@ final class ReportingSubscriber implements EventSubscriberInterface
       return;
     }
 
-    $event->addReport( new Report(
-      self::REPORT_ID,
-      SummaryController::ROUTE,
-      'summary.title',
-      self::REPORT_ICON,
-      ReportingGraphsBundle::TRANSLATION_DOMAIN
-    ) );
+    $event->addReport( $this->createReport( self::QUARTER_USER_ID, UserQuarterController::ROUTE, UserQuarterController::TITLE, self::USER_ICON ) );
+
+    if ( $this->security->isGranted( 'report:other' ) )
+    {
+      $event->addReport( $this->createReport( self::QUARTER_USERS_ID, ReportUsersQuarterController::ROUTE, ReportUsersQuarterController::TITLE, self::USERS_ICON ) );
+    }
+
+    $event->addReport( $this->createReport( self::REPORT_ID, SummaryController::ROUTE, 'summary.title', self::REPORT_ICON ) );
+  }
+
+  /**
+   * Creates an entry for the reporting overview, named in this plugin's translations.
+   *
+   * @param string $id The ID of the report.
+   * @param string $route The route that shows the report.
+   * @param string $label The translation key of the report's name.
+   * @param string $icon The icon shown next to the report.
+   * @return Report
+   */
+  private function createReport( string $id, string $route, string $label, string $icon ) : Report
+  {
+    return new Report( $id, $route, $label, $icon, ReportingGraphsBundle::TRANSLATION_DOMAIN );
   }
 }

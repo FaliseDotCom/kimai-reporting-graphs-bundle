@@ -1,0 +1,8 @@
+{# Breadcrumb of the plugin's reports that extend Kimai's report layout, with report_title in this plugin's translations. #}
+{% block breadcrumb %}
+  {% from 'macros/breadcrumb.html.twig' import breadcrumb %}
+  {{ breadcrumb({
+    ('menu.reporting'|trans): path('reporting'),
+    (report_title|trans({}, 'reporting_graphs')): '#'
+  }) }}
+{% endblock %}

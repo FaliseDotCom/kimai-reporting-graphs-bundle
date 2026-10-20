@@ -1,0 +1,22 @@
+{# Form theme for the quarter picker, in the style of Kimai's month and year pickers. #}
+{% block quarterpicker_widget -%}
+  <div class="btn-group">
+    <a class="btn btn-left btn-icon" href="#" data-toggle="tooltip" data-placement="top" title="{{ previous.label }}"
+       data-form-widget="copy-data" data-target="#{{ id }}" data-value="{{ previous.date }}" data-event="change">
+      {{ icon('left') }}
+    </a>
+    <button type="button" class="btn btn-default dropdown-toggle" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      {{ quarter.label }}
+    </button>
+    <ul class="dropdown-menu dropdown-menu-start pre-scrollable" style="z-index: 1021">
+      {% for option in range %}
+        <li><a href="#" data-form-widget="copy-data" data-target="#{{ id }}" data-value="{{ option.date }}" data-event="change" class="dropdown-item{% if option.date == quarter.date %} active{% endif %}">{{ option.label }}</a></li>
+      {% endfor %}
+    </ul>
+    <a class="btn btn-right btn-icon" href="#" data-toggle="tooltip" data-placement="top" title="{{ next.label }}"
+       data-form-widget="copy-data" data-target="#{{ id }}" data-value="{{ next.date }}" data-event="change">
+      {{ icon('right') }}
+    </a>
+  </div>
+  <input type="hidden" id="{{ id }}" name="{{ full_name }}" value="{{ value }}">
+{%- endblock quarterpicker_widget %}

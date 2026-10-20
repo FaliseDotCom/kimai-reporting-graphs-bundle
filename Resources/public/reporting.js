@@ -60,7 +60,7 @@
   ];
 
   /**
-   * Selector of the buttons that switch between the weekly, monthly and yearly report.
+   * Selector of the buttons that switch between the weekly, monthly, quarterly and yearly report.
    *
    * @type {string}
    */

@@ -11,8 +11,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Builds the links between the weekly, monthly and yearly report for one user, so each report
- * can switch to the other two for the same user and a matching period.
+ * Builds the links between the weekly, monthly, quarterly and yearly report for one user, so
+ * each report can switch to the others for the same user and a matching period.
  *
  * @phpstan-type ViewLink array{label: string, url: string}
  */
@@ -26,6 +26,7 @@ final class ReportViewLinks
   private const VIEWS = [
     UserReportChartsSubscriber::ROUTE_WEEK => 'summary.view.week',
     UserReportChartsSubscriber::ROUTE_MONTH => 'summary.view.month',
+    UserReportChartsSubscriber::ROUTE_QUARTER => 'summary.view.quarter',
     UserReportChartsSubscriber::ROUTE_YEAR => 'summary.view.year',
   ];
 
@@ -39,16 +40,18 @@ final class ReportViewLinks
   /**
    * @param UrlGeneratorInterface $urlGenerator Builds the report addresses.
    * @param SystemConfiguration $configuration Provides the start of the financial year.
+   * @param QuarterPeriod $quarters Calculates the start of a quarter.
    */
   public function __construct(
     private readonly UrlGeneratorInterface $urlGenerator,
-    private readonly SystemConfiguration $configuration
+    private readonly SystemConfiguration $configuration,
+    private readonly QuarterPeriod $quarters
   )
   {
   }
 
   /**
-   * Returns a link to each of the other two user reports. The new period contains today when
+   * Returns a link to each of the other user reports. The new period contains today when
    * the current period does, and otherwise the first day of the current period.
    *
    * @param string $currentRoute The report being shown.
@@ -92,6 +95,11 @@ final class ReportViewLinks
     if ( $route === UserReportChartsSubscriber::ROUTE_MONTH )
     {
       return $target->modify( 'first day of this month' );
+    }
+
+    if ( $route === UserReportChartsSubscriber::ROUTE_QUARTER )
+    {
+      return $this->quarters->getStart( $target );
     }
 
     if ( $route === UserReportChartsSubscriber::ROUTE_YEAR )
