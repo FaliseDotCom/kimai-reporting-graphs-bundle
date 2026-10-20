@@ -12,8 +12,9 @@ user** get two charts above their table:
 - a doughnut chart of each project's share of the period, with the total time in its centre.
 
 The charts follow the period and user picked in the report, including a financial year when
-one is configured. In the table, customer and project names link to their detail pages for
-users who may view them.
+one is configured, and show the same user as Kimai's table, also when a disabled user is asked
+for. In the table, projects are indented under their customer, and customer and project names
+link to their detail pages for users who may view them.
 
 Next to the period picker, buttons switch to the other two reports for the same user and
 summing mode: the yearly view gets **Week** and **Month**, and so on. The new report opens
@@ -28,11 +29,12 @@ that contains the current period's first day.
 - a stacked bar chart of the time per day (periods up to 62 days) or per month;
 - a doughnut chart of each group's share, with the total time in its centre;
 - a breakdown per project, customer, activity or user that opens to show the time per
-  description.
+  description: at most 50 per group, with one line for the rest.
 
 The period comes from Kimai's own date range picker, with its presets for weeks, months,
 quarters and years, plus arrows to step back and forward. Without a period ("all time") the
-report covers everything from the first to the last record.
+report covers everything from the first to the last record. Periods longer than 62 days are
+summed per month in the database, so long periods stay quick.
 
 It ships with the [Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai/blob/main/kimai/DOCS.md), but works in any Kimai
 installation.
@@ -77,7 +79,9 @@ The today cards open the week, as there is no daily report.
 ## Requirements
 
 Kimai 2.67.0 or later. It uses the Chart.js build that Kimai ships, so it needs no assets of
-its own beyond one script and one stylesheet, which the plugin serves itself.
+its own beyond one script and one stylesheet, which the plugin serves itself. Any logged-in
+user may load them, as the dashboard widget needs them without access to the reports.
+Browsers keep them for a day, and a release changes the version in their address.
 
 ## Installation
 
@@ -104,7 +108,7 @@ and exports hide those records from the viewer.
 
 ## Translations
 
-English and Dutch, in `Resources/translations/summary.*.xlf`.
+English and Dutch, in `Resources/translations/reporting_graphs.*.xlf`.
 
 ## Source
 
