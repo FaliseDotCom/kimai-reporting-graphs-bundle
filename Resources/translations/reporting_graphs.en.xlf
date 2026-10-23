@@ -106,6 +106,22 @@
         <source>quarter.report_users</source>
         <target>Quarterly view for all users</target>
       </trans-unit>
+      <trans-unit id="overview.badge.week" resname="overview.badge.week">
+        <source>overview.badge.week</source>
+        <target>W</target>
+      </trans-unit>
+      <trans-unit id="overview.badge.month" resname="overview.badge.month">
+        <source>overview.badge.month</source>
+        <target>M</target>
+      </trans-unit>
+      <trans-unit id="overview.badge.quarter" resname="overview.badge.quarter">
+        <source>overview.badge.quarter</source>
+        <target>Q</target>
+      </trans-unit>
+      <trans-unit id="overview.badge.year" resname="overview.badge.year">
+        <source>overview.badge.year</source>
+        <target>Y</target>
+      </trans-unit>
       <trans-unit id="widget.working_time" resname="widget.working_time">
         <source>widget.working_time</source>
         <target>Your working hours by project per week</target>

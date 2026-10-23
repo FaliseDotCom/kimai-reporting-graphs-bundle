@@ -195,6 +195,28 @@
   const MOVE_ATTRIBUTE = 'data-summary-move-to';
 
   /**
+   * ID of the script element that holds the period letter per report address, on Kimai's
+   * reporting overview.
+   *
+   * @type {string}
+   */
+  const PERIOD_BADGES_ELEMENT_ID = 'report-period-badges';
+
+  /**
+   * Selector of a report card on Kimai's reporting overview.
+   *
+   * @type {string}
+   */
+  const REPORT_CARD_SELECTOR = 'a.card-link';
+
+  /**
+   * Selectors of the icon and the name inside a report card.
+   *
+   * @type {{icon: string, label: string}}
+   */
+  const REPORT_CARD_PARTS = { icon: '.avatar', label: '.col' };
+
+  /**
    * Number of seconds in an hour.
    *
    * @type {number}
@@ -795,12 +817,78 @@
   }
 
   /**
+   * Gives the weekly, monthly, quarterly and yearly report cards on Kimai's reporting overview
+   * a period letter on their icon, and makes the period, the first word of their name, bold.
+   *
+   * @returns {void}
+   */
+  function markReportPeriods()
+  {
+    const element = document.getElementById( PERIOD_BADGES_ELEMENT_ID );
+    if ( element === null )
+    {
+      return;
+    }
+
+    let badges;
+    try
+    {
+      badges = JSON.parse( element.textContent );
+    }
+    catch ( error )
+    {
+      console.error( 'Reporting overview: invalid period letters', error );
+      return;
+    }
+
+    document.querySelectorAll( REPORT_CARD_SELECTOR ).forEach( ( card ) =>
+    {
+      const href = card.getAttribute( 'href' );
+      const icon = card.querySelector( REPORT_CARD_PARTS.icon );
+      const label = card.querySelector( REPORT_CARD_PARTS.label );
+      if ( !Object.hasOwn( badges, href ) || icon === null || label === null )
+      {
+        return;
+      }
+
+      const badge = document.createElement( 'span' );
+      badge.className = 'report-period-badge';
+      badge.setAttribute( 'aria-hidden', 'true' );
+      badge.textContent = badges[ href ];
+      icon.classList.add( 'report-period-icon' );
+      icon.append( badge );
+      boldFirstWord( label );
+    } );
+  }
+
+  /**
+   * Makes the first word of an element's text bold.
+   *
+   * @param {HTMLElement} element The element whose text is a plain name.
+   * @returns {void}
+   */
+  function boldFirstWord( element )
+  {
+    const text = element.textContent.trim();
+    const end = text.search( /\s/ );
+    if ( end <= 0 )
+    {
+      return;
+    }
+
+    const word = document.createElement( 'strong' );
+    word.textContent = text.slice( 0, end );
+    element.replaceChildren( word, text.slice( end ) );
+  }
+
+  /**
    * Draws everything once Kimai is ready.
    *
    * @returns {void}
    */
   function init()
   {
+    markReportPeriods();
     placeCharts();
     placeViewSwitch();
     linkReportRows();

@@ -41,10 +41,10 @@ final class DashboardLinksSubscriber implements EventSubscriberInterface
    * @var array<string, string>
    */
   private const ALL_USERS_CARDS = [
-    'DurationToday' => 'report_weekly_users',
-    'DurationWeek' => 'report_weekly_users',
-    'DurationMonth' => 'report_monthly_users',
-    'DurationYear' => 'report_yearly_users',
+    'DurationToday' => ReportOverviewSubscriber::ROUTE_USERS_WEEK,
+    'DurationWeek' => ReportOverviewSubscriber::ROUTE_USERS_WEEK,
+    'DurationMonth' => ReportOverviewSubscriber::ROUTE_USERS_MONTH,
+    'DurationYear' => ReportOverviewSubscriber::ROUTE_USERS_YEAR,
   ];
 
   /**

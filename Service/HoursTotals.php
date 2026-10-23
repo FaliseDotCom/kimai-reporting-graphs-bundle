@@ -10,6 +10,7 @@ use App\Repository\TimesheetRepository;
 use App\Timesheet\DateTimeFactory;
 use DateTimeImmutable;
 use DateTimeInterface;
+use KimaiPlugin\ReportingGraphsBundle\EventSubscriber\ReportOverviewSubscriber;
 use KimaiPlugin\ReportingGraphsBundle\EventSubscriber\UserReportChartsSubscriber;
 
 /**
@@ -46,10 +47,10 @@ final class HoursTotals
    * @var array<string, string>
    */
   private const ALL_USERS_ROUTES = [
-    'today' => 'report_weekly_users',
-    'week' => 'report_weekly_users',
-    'month' => 'report_monthly_users',
-    'year' => 'report_yearly_users',
+    'today' => ReportOverviewSubscriber::ROUTE_USERS_WEEK,
+    'week' => ReportOverviewSubscriber::ROUTE_USERS_WEEK,
+    'month' => ReportOverviewSubscriber::ROUTE_USERS_MONTH,
+    'year' => ReportOverviewSubscriber::ROUTE_USERS_YEAR,
   ];
 
   /**

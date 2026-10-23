@@ -283,3 +283,26 @@ a.summary-widget-total:hover
 {
   margin-top: 1.5rem;
 }
+
+/* Reporting overview: a period letter in the corner of the period reports' icon */
+.report-period-icon
+{
+  position: relative;
+}
+
+.report-period-badge
+{
+  position: absolute;
+  right: -0.375rem;
+  bottom: -0.375rem;
+  min-width: 1.125rem;
+  padding: 0.125rem 0.25rem;
+  border: 1px solid var(--tblr-border-color);
+  border-radius: 100rem;
+  background: var(--tblr-bg-surface);
+  color: var(--tblr-body-color);
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+}

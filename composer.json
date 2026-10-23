@@ -3,7 +3,7 @@
   "description": "Reporting extras for Kimai: quarterly reports, a summary report with charts, and charts and detail links on the weekly, monthly, quarterly and yearly user reports",
   "homepage": "https://github.com/FaliseDotCom/ha-kimai",
   "type": "kimai-plugin",
-  "version": "1.6.1",
+  "version": "1.7.0",
   "keywords": [ "kimai", "kimai-plugin" ],
   "license": "MIT",
   "authors": [

@@ -1,0 +1,11 @@
+{# Period letters for the report cards on Kimai's reporting overview, placed by reporting.js. #}
+{% trans_default_domain 'reporting_graphs' %}
+<link rel="stylesheet" href="{{ path('reporting_bundle_asset', { 'name': 'reporting.css', 'v': asset_version }) }}">
+<script src="{{ path('reporting_bundle_asset', { 'name': 'reporting.js', 'v': asset_version }) }}"></script>
+
+{% set badges = {} %}
+{% for route, period in periods %}
+  {% set badges = badges|merge({ (path(route)): ('overview.badge.' ~ period)|trans }) %}
+{% endfor %}
+{# JSON_HEX_TAG keeps the letters from ending or hiding the script element. #}
+<script type="application/json" id="report-period-badges">{{ badges|json_encode(constant('JSON_HEX_TAG') b-or constant('JSON_HEX_AMP'))|raw }}</script>

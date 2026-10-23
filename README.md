@@ -19,6 +19,14 @@ same kind. Kimai only lets plugins append reports, so the plugin reorders Kimai'
 of reports; if a Kimai release changes that list, the quarterly reports move to the end
 instead.
 
+## Reporting overview
+
+On Kimai's reporting overview, the icons of the weekly, monthly, quarterly and yearly views,
+for one user and for all users, get a small letter for their period (**W**, **M**, **Q**,
+**Y**; in Dutch **W**, **M**, **K**, **J**), and the first word of their name, which holds
+the period in Kimai's English, Dutch and German names, is bold. The cards are found by their
+link, so the other reports are left alone.
+
 ## Charts on the user reports
 
 Kimai's **Weekly view for one user**, **Monthly view for one user** and **Yearly view for one
