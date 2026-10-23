@@ -6,6 +6,7 @@ namespace KimaiPlugin\ReportingGraphsBundle\EventSubscriber;
 
 use App\Event\ReportingEvent;
 use App\Reporting\Report;
+use App\Reporting\ReportInterface;
 use KimaiPlugin\ReportingGraphsBundle\Controller\ReportUsersQuarterController;
 use KimaiPlugin\ReportingGraphsBundle\Controller\SummaryController;
 use KimaiPlugin\ReportingGraphsBundle\Controller\UserQuarterController;
@@ -61,6 +62,24 @@ final class ReportingSubscriber implements EventSubscriberInterface
   private const USERS_ICON = 'users';
 
   /**
+   * The Kimai report each quarterly report follows in the overview, so it sits between the
+   * monthly and yearly report of the same kind.
+   *
+   * @var array<string, string>
+   */
+  private const PLACE_AFTER = [
+    self::QUARTER_USER_ID => 'month_by_user',
+    self::QUARTER_USERS_ID => 'monthly_users_list',
+  ];
+
+  /**
+   * The private property of ReportingEvent that holds the reports, keyed by their ID.
+   *
+   * @var string
+   */
+  private const EVENT_REPORTS_PROPERTY = 'reports';
+
+  /**
    * @param AuthorizationCheckerInterface $security Checks whether the user may see the reports.
    */
   public function __construct( private readonly AuthorizationCheckerInterface $security )
@@ -101,6 +120,65 @@ final class ReportingSubscriber implements EventSubscriberInterface
     }
 
     $event->addReport( $this->createReport( self::REPORT_ID, SummaryController::ROUTE, 'summary.title', self::REPORT_ICON ) );
+    $this->placeQuarterlyReports( $event );
+  }
+
+  /**
+   * Moves the quarterly reports next to Kimai's monthly ones. ReportingEvent can only append
+   * reports, so this rewrites its private list; when a Kimai release renames that property the
+   * reports simply stay at the end.
+   *
+   * @param ReportingEvent $event The event that collects the available reports.
+   * @return void
+   */
+  private function placeQuarterlyReports( ReportingEvent $event ) : void
+  {
+    if ( !property_exists( $event, self::EVENT_REPORTS_PROPERTY ) )
+    {
+      return;
+    }
+
+    $property = new \ReflectionProperty( ReportingEvent::class, self::EVENT_REPORTS_PROPERTY );
+    $property->setValue( $event, $this->sortReports( $event->getReports() ) );
+  }
+
+  /**
+   * Orders the reports so each quarterly report follows its Kimai report, keyed by report ID as
+   * ReportingEvent keeps them. A quarterly report whose Kimai report is missing keeps its place.
+   *
+   * @param array<ReportInterface> $reports The reports in the order they were added.
+   * @return array<string, ReportInterface>
+   */
+  private function sortReports( array $reports ) : array
+  {
+    $byId = [];
+
+    foreach ( $reports as $report )
+    {
+      $byId[ $report->getId() ] = $report;
+    }
+
+    $sorted = [];
+
+    foreach ( $byId as $id => $report )
+    {
+      $anchor = self::PLACE_AFTER[ $id ] ?? '';
+
+      if ( $anchor !== '' && isset( $byId[ $anchor ] ) )
+      {
+        continue;
+      }
+
+      $sorted[ $id ] = $report;
+      $follower = array_search( $id, self::PLACE_AFTER, true );
+
+      if ( $follower !== false && isset( $byId[ $follower ] ) )
+      {
+        $sorted[ $follower ] = $byId[ $follower ];
+      }
+    }
+
+    return $sorted;
   }
 
   /**

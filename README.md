@@ -14,8 +14,10 @@ offers the current quarter and the eleven before it. The report for one user nee
 for all users, a user's total opens their quarterly report and a month opens their monthly
 report.
 
-Kimai lists reports added by plugins after its own, so the quarterly reports appear after
-Kimai's reports in the overview rather than next to the monthly and yearly ones.
+In the overview, each quarterly report sits between Kimai's monthly and yearly report of the
+same kind. Kimai only lets plugins append reports, so the plugin reorders Kimai's private list
+of reports; if a Kimai release changes that list, the quarterly reports move to the end
+instead.
 
 ## Charts on the user reports
 
