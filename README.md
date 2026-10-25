@@ -148,12 +148,27 @@ and exports hide those records from the viewer.
 
 English and Dutch, in `Resources/translations/reporting_graphs.*.xlf`.
 
-## Source
+## Other plugins
 
-This plugin is developed in the [Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai) repository, in
-`kimai/bundles/ReportingGraphsBundle/`. The [kimai-reporting-graphs-bundle](https://github.com/FaliseDotCom/kimai-reporting-graphs-bundle) repository is a
-read-only mirror of that folder for releases: report issues and send changes to the app
-repository.
+This plugin is one of five Kimai plugins made to work together: the quick start bar starts
+and stops records, short time entries and inline timesheet editing make correcting them
+quick, timesheet extras keep the record list tidy, and reporting extras show where the time
+went. Each one also works on its own. The other four:
+
+- [Quick start bar](https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle): start and stop time recording from one bar below the top bar, and start a record again with its play button.
+- [Short time entries](https://github.com/FaliseDotCom/kimai-short-time-entries-bundle): type `945` for 9:45 or `10` for ten minutes in Kimai's forms.
+- [Inline timesheet editing](https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle): edit your own records right in the record list.
+- [Timesheet extras](https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle): collapsible days in the record list and closable search filters.
+
+## Issues and contributing
+
+Report problems and ideas in this repository's [issues](https://github.com/FaliseDotCom/kimai-reporting-graphs-bundle/issues). Pull requests are
+welcome here too.
+
+The plugin is developed in the [Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai) repository,
+in `kimai/bundles/ReportingGraphsBundle/`, and published from there to this repository with each
+release. An accepted pull request is applied there, with its author kept, and arrives here
+with the next release.
 
 ## License
 
