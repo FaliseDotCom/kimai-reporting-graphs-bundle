@@ -150,15 +150,17 @@ English and Dutch, in `Resources/translations/reporting_graphs.*.xlf`.
 
 ## Other plugins
 
-This plugin is one of five Kimai plugins made to work together: the quick start bar starts
+This plugin is one of six Kimai plugins made to work together: the quick start bar starts
 and stops records, short time entries and inline timesheet editing make correcting them
-quick, timesheet extras keep the record list tidy, and reporting extras show where the time
-went. Each one also works on its own. The other four:
+quick, timesheet extras keep the record list tidy, reporting extras show where the time
+went, and ODT templates turn the records into your own documents. Each one also works on its
+own. The other five:
 
 - [Quick start bar](https://github.com/FaliseDotCom/kimai-quick-timer-bar-bundle): start and stop time recording from one bar below the top bar, and start a record again with its play button.
 - [Short time entries](https://github.com/FaliseDotCom/kimai-short-time-entries-bundle): type `945` for 9:45 or `10` for ten minutes in Kimai's forms.
 - [Inline timesheet editing](https://github.com/FaliseDotCom/kimai-inline-timesheet-edit-bundle): edit your own records right in the record list.
 - [Timesheet extras](https://github.com/FaliseDotCom/kimai-timesheet-extras-bundle): collapsible days in the record list and closable search filters.
+- [ODT templates](https://github.com/FaliseDotCom/kimai-odt-templates-bundle): exports and invoices from your own LibreOffice Writer templates.
 
 ## Issues and contributing
 
