@@ -90,6 +90,18 @@
         <source>summary.view.quarter</source>
         <target>Quarter</target>
       </trans-unit>
+      <trans-unit id="summary.view.period" resname="summary.view.period">
+        <source>summary.view.period</source>
+        <target>Period</target>
+      </trans-unit>
+      <trans-unit id="period.report_user" resname="period.report_user">
+        <source>period.report_user</source>
+        <target>Period view for one user</target>
+      </trans-unit>
+      <trans-unit id="overview.badge.period" resname="overview.badge.period">
+        <source>overview.badge.period</source>
+        <target>P</target>
+      </trans-unit>
       <trans-unit id="summary.sort.customer" resname="summary.sort.customer">
         <source>summary.sort.customer</source>
         <target>Customer</target>

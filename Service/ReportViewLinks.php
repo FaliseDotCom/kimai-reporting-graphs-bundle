@@ -5,13 +5,14 @@ declare( strict_types=1 );
 namespace KimaiPlugin\ReportingGraphsBundle\Service;
 
 use App\Configuration\SystemConfiguration;
+use App\Form\Type\DateRangeType;
 use DateTimeImmutable;
 use KimaiPlugin\ReportingGraphsBundle\EventSubscriber\UserReportChartsSubscriber;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * Builds the links between the weekly, monthly, quarterly and yearly report for one user, so
+ * Builds the links between the weekly, monthly, quarterly, yearly and period report for one user, so
  * each report can switch to the others for the same user and a matching period.
  *
  * @phpstan-type ViewLink array{label: string, url: string}
@@ -28,7 +29,15 @@ final class ReportViewLinks
     UserReportChartsSubscriber::ROUTE_MONTH => 'summary.view.month',
     UserReportChartsSubscriber::ROUTE_QUARTER => 'summary.view.quarter',
     UserReportChartsSubscriber::ROUTE_YEAR => 'summary.view.year',
+    UserReportChartsSubscriber::ROUTE_PERIOD => 'summary.view.period',
   ];
+
+  /**
+   * The query parameter that opens the other reports on a period.
+   *
+   * @var string
+   */
+  private const DATE_PARAMETER = 'date';
 
   /**
    * Report filters that are carried over to the other view.
@@ -51,8 +60,9 @@ final class ReportViewLinks
   }
 
   /**
-   * Returns a link to each of the other user reports. The new period contains today when
-   * the current period does, and otherwise the first day of the current period.
+   * Returns a link to each of the other user reports. The period report opens on the current
+   * period itself. In the others the new period contains today when the current period does,
+   * and otherwise the first day of the current period.
    *
    * @param string $currentRoute The report being shown.
    * @param DateTimeImmutable $begin The first day of the current period.
@@ -76,11 +86,30 @@ final class ReportViewLinks
 
       $links[] = [
         'label' => $label,
-        'url' => $this->urlGenerator->generate( $route, $kept + [ 'date' => $this->getStartDate( $route, $target )->format( 'Y-m-d' ) ] ),
+        'url' => $this->urlGenerator->generate( $route, $kept + $this->getPeriodParameter( $route, $target, $begin, $end ) ),
       ];
     }
 
     return $links;
+  }
+
+  /**
+   * Returns the query parameter that opens a report on the wanted period.
+   *
+   * @param string $route The report to link to.
+   * @param DateTimeImmutable $target A day inside the wanted period.
+   * @param DateTimeImmutable $begin The first day of the current period.
+   * @param DateTimeImmutable $end The last day of the current period.
+   * @return array<string, string>
+   */
+  private function getPeriodParameter( string $route, DateTimeImmutable $target, DateTimeImmutable $begin, DateTimeImmutable $end ) : array
+  {
+    if ( $route === UserReportChartsSubscriber::ROUTE_PERIOD )
+    {
+      return [ PeriodNavigator::DATE_RANGE_PARAMETER => DateRangeType::formatQueryString( $begin, $end ) ];
+    }
+
+    return [ self::DATE_PARAMETER => $this->getStartDate( $route, $target )->format( 'Y-m-d' ) ];
   }
 
   /**

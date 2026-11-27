@@ -1,0 +1,16 @@
+{# Kimai's monthly (a column per day) or yearly (a column per month) report for one user, over a period picked with Kimai's date range picker. #}
+{% extends per_month ? 'reporting/report_by_user_year.html.twig' : 'reporting/report_by_user.html.twig' %}
+{% use '@ReportingGraphs/report_breadcrumb.html.twig' %}
+{% import 'macros/widgets.html.twig' as widgets %}
+
+{% block report_form_layout %}
+  {{ include('@ReportingGraphs/period_range_picker.html.twig', { field: form.daterange, route: 'report_user_period', previous_query: previous_query, next_query: next_query }, with_context = false) }}
+  {% if form.user is defined %}
+    {{ form_widget(form.user, { 'label': false }) }}
+  {% elseif app.user != user %}
+    {{ widgets.username(user) }}
+  {% endif %}
+  {{ form_widget(form.sumType) }}
+  {% from '@theme/components/buttons.html.twig' import submit_button %}
+  {{ submit_button('download', { 'attr': { 'formaction': path(export_route) }, 'icon': 'download', 'combined': false }) }}
+{% endblock %}

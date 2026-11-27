@@ -4,6 +4,7 @@ declare( strict_types=1 );
 
 namespace KimaiPlugin\ReportingGraphsBundle\Service;
 
+use App\Form\Type\DateRangeType;
 use DateTimeImmutable;
 
 /**
@@ -14,6 +15,13 @@ final class PeriodNavigator
 {
   public const DIRECTION_PREVIOUS = -1;
   public const DIRECTION_NEXT = 1;
+
+  /**
+   * The query parameter of Kimai's date range picker.
+   *
+   * @var string
+   */
+  public const DATE_RANGE_PARAMETER = 'daterange';
 
   /**
    * Returns the period before the given one.
@@ -37,6 +45,37 @@ final class PeriodNavigator
   public function getNext( DateTimeImmutable $begin, DateTimeImmutable $end ) : array
   {
     return $this->shift( $begin, $end, self::DIRECTION_NEXT );
+  }
+
+  /**
+   * Returns the query parameters of the previous and the next period: the given parameters
+   * with another date range, in Kimai's date range query format.
+   *
+   * @param array<string, mixed> $parameters The current query parameters.
+   * @param DateTimeImmutable $begin The first day of the period.
+   * @param DateTimeImmutable $end The last day of the period.
+   * @return array{previous: array<string, mixed>, next: array<string, mixed>}
+   */
+  public function getQueries( array $parameters, DateTimeImmutable $begin, DateTimeImmutable $end ) : array
+  {
+    return [
+      'previous' => $this->withPeriod( $parameters, $this->getPrevious( $begin, $end ) ),
+      'next' => $this->withPeriod( $parameters, $this->getNext( $begin, $end ) ),
+    ];
+  }
+
+  /**
+   * Returns query parameters with their date range replaced by the given period.
+   *
+   * @param array<string, mixed> $parameters The current query parameters.
+   * @param array{0: DateTimeImmutable, 1: DateTimeImmutable} $period The first and last day.
+   * @return array<string, mixed>
+   */
+  private function withPeriod( array $parameters, array $period ) : array
+  {
+    return array_merge( $parameters, [
+      self::DATE_RANGE_PARAMETER => DateRangeType::formatQueryString( $period[ 0 ], $period[ 1 ] ),
+    ] );
   }
 
   /**

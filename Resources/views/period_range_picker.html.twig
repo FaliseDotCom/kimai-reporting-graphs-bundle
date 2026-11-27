@@ -1,0 +1,17 @@
+{#
+  Kimai's date range picker between arrows to the previous and next period.
+  field          = the date range form field
+  route          = the report the arrows open
+  previous_query = query parameters of the previous period
+  next_query     = query parameters of the next period
+#}
+{% trans_default_domain 'reporting_graphs' %}
+<div class="btn-group summary-period">
+  <a class="btn btn-icon" href="{{ path(route, previous_query) }}" title="{{ 'summary.previous'|trans }}" aria-label="{{ 'summary.previous'|trans }}">
+    <i class="{{ 'left'|icon(true) }}"></i>
+  </a>
+  {{ form_widget(field) }}
+  <a class="btn btn-icon" href="{{ path(route, next_query) }}" title="{{ 'summary.next'|trans }}" aria-label="{{ 'summary.next'|trans }}">
+    <i class="{{ 'right'|icon(true) }}"></i>
+  </a>
+</div>

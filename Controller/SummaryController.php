@@ -75,6 +75,7 @@ final class SummaryController extends AbstractController
     [ $begin, $end ] = $this->getPeriod( $query->getDateRange(), $userIds, $factory );
     $rows = $this->repository->findRows( $begin, $end, $userIds, $this->builder->isPerMonth( $begin, $end ) );
     $rows = $this->restrictedDescriptions->hide( $rows, $viewer );
+    $periodQueries = $this->navigator->getQueries( $request->query->all(), $begin, $end );
 
     return $this->render( '@ReportingGraphs/summary.html.twig', [
       'form' => $form->createView(),
@@ -83,8 +84,8 @@ final class SummaryController extends AbstractController
       'end' => $end,
       'group_by' => $query->getGroupBy(),
       'show_rates' => $this->canSeeRates( $userIds, $viewer ),
-      'previous_query' => $this->createPeriodQuery( $request, $this->navigator->getPrevious( $begin, $end ) ),
-      'next_query' => $this->createPeriodQuery( $request, $this->navigator->getNext( $begin, $end ) ),
+      'previous_query' => $periodQueries[ 'previous' ],
+      'next_query' => $periodQueries[ 'next' ],
       'asset_version' => ReportingGraphsBundle::getAssetVersion(),
     ] );
   }
@@ -181,19 +182,5 @@ final class SummaryController extends AbstractController
     }
 
     return $this->isGranted( 'view_rate_other_timesheet' );
-  }
-
-  /**
-   * Returns the current query parameters with another period.
-   *
-   * @param Request $request The current request.
-   * @param array{0: DateTimeImmutable, 1: DateTimeImmutable} $period The first and last day.
-   * @return array<string, mixed>
-   */
-  private function createPeriodQuery( Request $request, array $period ) : array
-  {
-    return array_merge( $request->query->all(), [
-      'daterange' => $period[ 0 ]->format( 'Y-m-d' ) . ' - ' . $period[ 1 ]->format( 'Y-m-d' ),
-    ] );
   }
 }

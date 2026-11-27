@@ -10,6 +10,7 @@ use App\Event\ThemeEvent;
 use App\Timesheet\DateTimeFactory;
 use DateTimeImmutable;
 use DateTimeInterface;
+use KimaiPlugin\ReportingGraphsBundle\Controller\UserPeriodController;
 use KimaiPlugin\ReportingGraphsBundle\Controller\UserQuarterController;
 use KimaiPlugin\ReportingGraphsBundle\Model\SummaryQuery;
 use KimaiPlugin\ReportingGraphsBundle\ReportingGraphsBundle;
@@ -27,8 +28,8 @@ use Twig\Environment;
 
 /**
  * Adds a bar chart per day (or month) and a doughnut chart per project to the weekly, monthly,
- * quarterly and yearly report for one user, and links its customers and projects to their
- * detail pages, and adds buttons to switch to the other reports.
+ * quarterly, yearly and period report for one user, and links its customers and projects to
+ * their detail pages, and adds buttons to switch to the other reports.
  */
 final class UserReportChartsSubscriber implements EventSubscriberInterface
 {
@@ -36,6 +37,14 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
   public const ROUTE_MONTH = 'report_user_month';
   public const ROUTE_QUARTER = UserQuarterController::ROUTE;
   public const ROUTE_YEAR = 'report_user_year';
+  public const ROUTE_PERIOD = UserPeriodController::ROUTE;
+
+  /**
+   * The user reports that get the charts.
+   *
+   * @var array<int, string>
+   */
+  private const ROUTES = [ self::ROUTE_WEEK, self::ROUTE_MONTH, self::ROUTE_QUARTER, self::ROUTE_YEAR, self::ROUTE_PERIOD ];
 
   /**
    * @param RequestStack $requestStack Tells which report, period and user are shown.
@@ -88,7 +97,7 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
     $request = $this->requestStack->getMainRequest();
     $route = $request?->attributes->get( '_route' );
 
-    if ( !$viewer instanceof User || $request === null || !in_array( $route, [ self::ROUTE_WEEK, self::ROUTE_MONTH, self::ROUTE_QUARTER, self::ROUTE_YEAR ], true ) )
+    if ( !$viewer instanceof User || $request === null || !in_array( $route, self::ROUTES, true ) )
     {
       return;
     }
@@ -133,7 +142,8 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
   }
 
   /**
-   * Returns the first and last day of the report period, the same way Kimai's report does.
+   * Returns the first and last day of the report period, the same way Kimai's report does. The
+   * period report hands over the period it read in a request attribute.
    *
    * @param string $route The report route.
    * @param Request $request The report request.
@@ -142,6 +152,14 @@ final class UserReportChartsSubscriber implements EventSubscriberInterface
    */
   private function getPeriod( string $route, Request $request, User $viewer ) : array
   {
+    $period = $request->attributes->get( UserPeriodController::PERIOD_ATTRIBUTE );
+    $first = is_array( $period ) ? $period[ 0 ] ?? null : null;
+    $last = is_array( $period ) ? $period[ 1 ] ?? null : null;
+    if ( $route === self::ROUTE_PERIOD && $first instanceof DateTimeInterface && $last instanceof DateTimeInterface )
+    {
+      return $this->toDays( $first, $last );
+    }
+
     $factory = DateTimeFactory::createByUser( $viewer );
     $date = $this->getRequestedDate( $request, $factory );
 

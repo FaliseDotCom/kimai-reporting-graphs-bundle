@@ -9,13 +9,15 @@ use App\Reporting\Report;
 use App\Reporting\ReportInterface;
 use KimaiPlugin\ReportingGraphsBundle\Controller\ReportUsersQuarterController;
 use KimaiPlugin\ReportingGraphsBundle\Controller\SummaryController;
+use KimaiPlugin\ReportingGraphsBundle\Controller\UserPeriodController;
 use KimaiPlugin\ReportingGraphsBundle\Controller\UserQuarterController;
 use KimaiPlugin\ReportingGraphsBundle\ReportingGraphsBundle;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 /**
- * Adds the quarterly reports and the summary report to Kimai's reporting overview.
+ * Adds the quarterly reports, the period report for one user and the summary report to Kimai's
+ * reporting overview.
  */
 final class ReportingSubscriber implements EventSubscriberInterface
 {
@@ -48,7 +50,14 @@ final class ReportingSubscriber implements EventSubscriberInterface
   private const QUARTER_USERS_ID = 'quarterly_users_list';
 
   /**
-   * Kimai's icon for its reports about one user, so the quarterly one looks the same.
+   * The ID of the period report for one user in the reporting overview.
+   *
+   * @var string
+   */
+  private const PERIOD_USER_ID = 'period_by_user';
+
+  /**
+   * Kimai's icon for its reports about one user, so the quarterly and period ones look the same.
    *
    * @var string
    */
@@ -62,14 +71,15 @@ final class ReportingSubscriber implements EventSubscriberInterface
   private const USERS_ICON = 'users';
 
   /**
-   * The Kimai report each quarterly report follows in the overview, so it sits between the
-   * monthly and yearly report of the same kind.
+   * The Kimai report each added report follows in the overview: a quarterly report sits between
+   * the monthly and yearly report of the same kind, and the period report after the yearly one.
    *
    * @var array<string, string>
    */
   private const PLACE_AFTER = [
     self::QUARTER_USER_ID => 'month_by_user',
     self::QUARTER_USERS_ID => 'monthly_users_list',
+    self::PERIOD_USER_ID => 'year_by_user',
   ];
 
   /**
@@ -99,8 +109,8 @@ final class ReportingSubscriber implements EventSubscriberInterface
   }
 
   /**
-   * Adds the reports the user may see: the quarterly report for one user and the summary with
-   * report:user, and the quarterly report for all users with report:other as well.
+   * Adds the reports the user may see: the quarterly and period report for one user and the
+   * summary with report:user, and the quarterly report for all users with report:other as well.
    *
    * @param ReportingEvent $event The event that collects the available reports.
    * @return void
@@ -113,6 +123,7 @@ final class ReportingSubscriber implements EventSubscriberInterface
     }
 
     $event->addReport( $this->createReport( self::QUARTER_USER_ID, UserQuarterController::ROUTE, UserQuarterController::TITLE, self::USER_ICON ) );
+    $event->addReport( $this->createReport( self::PERIOD_USER_ID, UserPeriodController::ROUTE, UserPeriodController::TITLE, self::USER_ICON ) );
 
     if ( $this->security->isGranted( 'report:other' ) )
     {
@@ -120,18 +131,18 @@ final class ReportingSubscriber implements EventSubscriberInterface
     }
 
     $event->addReport( $this->createReport( self::REPORT_ID, SummaryController::ROUTE, 'summary.title', self::REPORT_ICON ) );
-    $this->placeQuarterlyReports( $event );
+    $this->placeAddedReports( $event );
   }
 
   /**
-   * Moves the quarterly reports next to Kimai's monthly ones. ReportingEvent can only append
-   * reports, so this rewrites its private list; when a Kimai release renames that property the
-   * reports simply stay at the end.
+   * Moves the quarterly and period reports next to the Kimai reports they follow. ReportingEvent
+   * can only append reports, so this rewrites its private list; when a Kimai release renames
+   * that property the reports simply stay at the end.
    *
    * @param ReportingEvent $event The event that collects the available reports.
    * @return void
    */
-  private function placeQuarterlyReports( ReportingEvent $event ) : void
+  private function placeAddedReports( ReportingEvent $event ) : void
   {
     if ( !property_exists( $event, self::EVENT_REPORTS_PROPERTY ) )
     {
@@ -143,8 +154,8 @@ final class ReportingSubscriber implements EventSubscriberInterface
   }
 
   /**
-   * Orders the reports so each quarterly report follows its Kimai report, keyed by report ID as
-   * ReportingEvent keeps them. A quarterly report whose Kimai report is missing keeps its place.
+   * Orders the reports so each added report follows its Kimai report, keyed by report ID as
+   * ReportingEvent keeps them. An added report whose Kimai report is missing keeps its place.
    *
    * @param array<ReportInterface> $reports The reports in the order they were added.
    * @return array<string, ReportInterface>

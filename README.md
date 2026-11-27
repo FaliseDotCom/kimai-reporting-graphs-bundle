@@ -19,18 +19,29 @@ same kind. Kimai only lets plugins append reports, so the plugin reorders Kimai'
 of reports; if a Kimai release changes that list, the quarterly reports move to the end
 instead.
 
+## Period report
+
+**Period view for one user** is Kimai's user report for any period, picked with Kimai's own
+date range picker and its presets, with arrows that step to the previous and next period. A
+period of up to 62 days gets a column per day, like the monthly report; a longer one a column
+per month, like the yearly report, with its first and last month counting only the days in the
+period. **Total period** covers the user's first to last record. It has the same user picker,
+sum type and spreadsheet download as Kimai's user reports, needs `report:user`, and opens on
+the current month. In the overview it follows the yearly report for one user.
+
 ## Reporting overview
 
-On Kimai's reporting overview, the icons of the weekly, monthly, quarterly and yearly views,
-for one user and for all users, get a small letter for their period (**W**, **M**, **Q**,
-**Y**; in Dutch **W**, **M**, **K**, **J**), and the first word of their name, which holds
+On Kimai's reporting overview, the icons of the weekly, monthly, quarterly, yearly and period
+views, for one user and for all users, get a small letter for their period (**W**, **M**, **Q**,
+**Y**, **P**; in Dutch **W**, **M**, **K**, **J**, **P**), and the first word of their name, which holds
 the period in Kimai's English, Dutch and German names, is bold. The cards are found by their
 link, so the other reports are left alone.
 
 ## Charts on the user reports
 
 Kimai's **Weekly view for one user**, **Monthly view for one user** and **Yearly view for one
-user**, and the **Quarterly view for one user**, get two charts above their table:
+user**, and the **Quarterly view for one user** and **Period view for one user**, get two
+charts above their table:
 
 - a bar chart of the hours per day (per month in the quarterly and yearly view), stacked by
   project;
@@ -50,10 +61,11 @@ Each duration in the doughnut chart's legend links to the records it counts, the
 as the project's total in Kimai's table. The **Other** item opens the records of all the
 projects it combines. The legend only links projects that the table links.
 
-Next to the period picker, buttons switch to the other three reports for the same user and
-summing mode: the yearly view gets **Week**, **Month** and **Quarter**, and so on. The new
-report opens on the period that contains today if the current period does, and otherwise on
-the period that contains the current period's first day.
+Next to the period picker, buttons switch to the other four reports for the same user and
+summing mode: the yearly view gets **Week**, **Month**, **Quarter** and **Period**, and so on.
+**Period** opens on exactly the period being shown, ready to widen or narrow. The others open
+on the period that contains today if the current period does, and otherwise on the period
+that contains the current period's first day.
 
 ## Summary report
 

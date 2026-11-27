@@ -12,7 +12,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
 
 /**
- * Makes the weekly, monthly, quarterly and yearly reports easier to tell apart on Kimai's
+ * Makes the weekly, monthly, quarterly, yearly and period reports easier to tell apart on Kimai's
  * reporting overview: their icon gets a period letter and the period in their name is bold.
  */
 final class ReportOverviewSubscriber implements EventSubscriberInterface
@@ -38,6 +38,7 @@ final class ReportOverviewSubscriber implements EventSubscriberInterface
     UserReportChartsSubscriber::ROUTE_MONTH => 'month',
     UserReportChartsSubscriber::ROUTE_QUARTER => 'quarter',
     UserReportChartsSubscriber::ROUTE_YEAR => 'year',
+    UserReportChartsSubscriber::ROUTE_PERIOD => 'period',
     self::ROUTE_USERS_WEEK => 'week',
     self::ROUTE_USERS_MONTH => 'month',
     ReportUsersQuarterController::ROUTE => 'quarter',

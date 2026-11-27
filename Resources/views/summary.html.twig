@@ -28,15 +28,7 @@
 
 {% block report_form_layout %}
   <div class="summary-toolbar">
-    <div class="btn-group summary-period">
-      <a class="btn btn-icon" href="{{ path('summary_report', previous_query) }}" title="{{ 'summary.previous'|trans }}" aria-label="{{ 'summary.previous'|trans }}">
-        <i class="{{ 'left'|icon(true) }}"></i>
-      </a>
-      {{ form_widget(form.daterange) }}
-      <a class="btn btn-icon" href="{{ path('summary_report', next_query) }}" title="{{ 'summary.next'|trans }}" aria-label="{{ 'summary.next'|trans }}">
-        <i class="{{ 'right'|icon(true) }}"></i>
-      </a>
-    </div>
+    {{ include('@ReportingGraphs/period_range_picker.html.twig', { field: form.daterange, route: 'summary_report', previous_query: previous_query, next_query: next_query }, with_context = false) }}
     {% if form.user is defined %}
       <div class="summary-filter">{{ form_widget(form.user) }}</div>
     {% endif %}
