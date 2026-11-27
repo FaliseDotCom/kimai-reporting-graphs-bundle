@@ -73,6 +73,27 @@ summed per month in the database, so long periods stay quick.
 It ships with the [Kimai app for Home Assistant](https://github.com/FaliseDotCom/ha-kimai/blob/main/kimai/DOCS.md), but works in any Kimai
 installation.
 
+## Period on the project details report
+
+Kimai's **Reporting** > **Projects** (the project details report) gets a period next to its
+project picker: Kimai's date range picker, with its presets. The report then only counts the
+records of that period: the totals, the year cards and the user and activity tabs. The
+**Not exported** and **Not invoiced** links open the export and invoice pages for the same
+period. The budget bars keep counting all records, as a budget is not tied to the period; the
+budget chart, which Kimai draws from the year cards, shows the budget used within the period.
+
+The period starts as the project's own start and end date, when the project has both;
+otherwise it is empty, which means all time, as without the plugin. Emptying the field shows
+all time. Picking another project starts that project on its own dates, unless a period was
+picked by hand, which then stays.
+
+Kimai's statistics service has no option for a period, so the plugin replaces it with a
+subclass (`Service/PeriodProjectStatisticService.php`). It behaves as Kimai's own everywhere
+except on this report with a period, where it switches on a Doctrine filter on the records'
+date (`Doctrine/TimesheetPeriodFilter.php`) for the duration of each statistics call. A Kimai
+release that changes this service may need a matching plugin update; check this report after
+upgrading Kimai.
+
 ## Dashboard widget
 
 **Your working hours by project per week** (`ReportingGraphsWorkingTime`) is a dashboard widget for the

@@ -9,7 +9,13 @@ services:
     exclude:
       - '../../Resources/'
       - '../../Model/'
+      - '../../Doctrine/'
 
   KimaiPlugin\ReportingGraphsBundle\Controller\:
     resource: '../../Controller'
     tags: [ 'controller.service_arguments' ]
+
+  # Kimai's project statistics, limited to the period picked on the project details report.
+  # Decorating replaces Kimai's service everywhere it is injected; it extends Kimai's class.
+  KimaiPlugin\ReportingGraphsBundle\Service\PeriodProjectStatisticService:
+    decorates: App\Project\ProjectStatisticService

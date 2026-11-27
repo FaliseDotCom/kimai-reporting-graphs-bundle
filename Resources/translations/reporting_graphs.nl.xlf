@@ -6,6 +6,10 @@
         <source>summary.title</source>
         <target>Samenvatting</target>
       </trans-unit>
+      <trans-unit id="project_details.period" resname="project_details.period">
+        <source>project_details.period</source>
+        <target>Periode</target>
+      </trans-unit>
       <trans-unit id="summary.all_users" resname="summary.all_users">
         <source>summary.all_users</source>
         <target>Alle gebruikers</target>

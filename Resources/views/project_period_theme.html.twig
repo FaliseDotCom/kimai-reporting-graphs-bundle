@@ -1,0 +1,8 @@
+{# Form theme for the period on Kimai's project details report. The field renders after the
+   filter bar, hidden; reporting.js moves it into the bar and shows it. #}
+{% block reporting_graphs_project_period_row -%}
+  <div class="project-details-period" role="group" aria-label="{{ 'project_details.period'|trans( {}, 'reporting_graphs' ) }}"
+       data-project-details-period="{{ period_query|default('') }}"{% if period_is_default|default(false) %} data-project-details-period-default{% endif %} hidden>
+    {{ form_widget(form) }}
+  </div>
+{%- endblock reporting_graphs_project_period_row %}

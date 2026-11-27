@@ -28,6 +28,13 @@
   min-width: 10rem;
 }
 
+/* Period on Kimai's project details report, placed next to its project picker by reporting.js */
+.project-details-period
+{
+  flex: 0 1 18rem;
+  min-width: 14rem;
+}
+
 /* Charts: the canvas fills a box with a fixed height */
 .summary-chart
 {
@@ -184,7 +191,8 @@
 @media (max-width: 575.98px)
 {
   .summary-period,
-  .summary-filter
+  .summary-filter,
+  .project-details-period
   {
     flex-basis: 100%;
     max-width: none;

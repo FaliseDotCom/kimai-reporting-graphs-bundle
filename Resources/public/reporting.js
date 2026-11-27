@@ -188,6 +188,34 @@
   const PERIOD_PICKER_SELECTOR = '#report-form .btn-list > .btn-group';
 
   /**
+   * Selector of the period field the plugin adds to Kimai's project details report.
+   *
+   * @type {string}
+   */
+  const PROJECT_PERIOD_SELECTOR = '[data-project-details-period]';
+
+  /**
+   * Selector of the filter bar of Kimai's reports, and of the project picker in it.
+   *
+   * @type {{bar: string, project: string}}
+   */
+  const REPORT_FILTERS = { bar: '#report-form .btn-list', project: '#report-form select[name="project"]' };
+
+  /**
+   * Name of the query parameter that holds a date range in Kimai's links.
+   *
+   * @type {string}
+   */
+  const DATE_RANGE_PARAMETER = 'daterange';
+
+  /**
+   * Selector of the links on a report that Kimai builds for all time, with an empty date range.
+   *
+   * @type {string}
+   */
+  const ALL_TIME_LINK_SELECTOR = '#reporting-content a[href*="' + DATE_RANGE_PARAMETER + '="]';
+
+  /**
    * Attribute naming the element that charts added to another report should move into.
    *
    * @type {string}
@@ -817,6 +845,79 @@
   }
 
   /**
+   * Moves the period field of the project details report into its filter bar, next to the
+   * project picker, and makes the report's links follow the period.
+   *
+   * @returns {void}
+   */
+  function placeProjectPeriod()
+  {
+    const period = document.querySelector( PROJECT_PERIOD_SELECTOR );
+    const bar = document.querySelector( REPORT_FILTERS.bar );
+    if ( period === null || bar === null )
+    {
+      return;
+    }
+
+    bar.append( period );
+    period.hidden = false;
+    resetPeriodWithProject( period );
+    linkPeriod( period.dataset.projectDetailsPeriod );
+  }
+
+  /**
+   * Lets another project start with its own dates while the period still is the current
+   * project's, by leaving the untouched field out when the project picker submits the form.
+   *
+   * @param {HTMLElement} period The period field's wrapper.
+   * @returns {void}
+   */
+  function resetPeriodWithProject( period )
+  {
+    const input = period.querySelector( 'input' );
+    const project = document.querySelector( REPORT_FILTERS.project );
+    if ( !period.hasAttribute( 'data-project-details-period-default' ) || input === null || project === null )
+    {
+      return;
+    }
+
+    // Runs before the report's own change listener on the form, which submits it.
+    project.addEventListener( 'change', () =>
+    {
+      if ( input.value === input.defaultValue )
+      {
+        input.disabled = true;
+      }
+    } );
+  }
+
+  /**
+   * Gives the report's all-time links, such as the records not exported yet, the period.
+   *
+   * @param {string} range The period as Kimai's date range parameter, or empty for all time.
+   * @returns {void}
+   */
+  function linkPeriod( range )
+  {
+    if ( range === undefined || range === '' )
+    {
+      return;
+    }
+
+    document.querySelectorAll( ALL_TIME_LINK_SELECTOR ).forEach( ( link ) =>
+    {
+      const url = new URL( link.href, window.location.href );
+      if ( url.searchParams.get( DATE_RANGE_PARAMETER ) !== '' )
+      {
+        return;
+      }
+
+      url.searchParams.set( DATE_RANGE_PARAMETER, range );
+      link.href = url.toString();
+    } );
+  }
+
+  /**
    * Gives the weekly, monthly, quarterly and yearly report cards on Kimai's reporting overview
    * a period letter on their icon, and makes the period, the first word of their name, bold.
    *
@@ -891,6 +992,7 @@
     markReportPeriods();
     placeCharts();
     placeViewSwitch();
+    placeProjectPeriod();
     linkReportRows();
     linkLegend();
     enableTableSort();
