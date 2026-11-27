@@ -8,7 +8,7 @@
     "source": "https://github.com/FaliseDotCom/kimai-reporting-graphs-bundle"
   },
   "type": "kimai-plugin",
-  "version": "1.7.0",
+  "version": "1.8.0",
   "keywords": [ "kimai", "kimai-plugin" ],
   "license": "MIT",
   "authors": [
